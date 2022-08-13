@@ -1,0 +1,384 @@
+# Results Substantive Analyses
+
+## Descriptive Analyses
+
+For readability purposes descriptive results were organised according to the 4 components in the KYSS-model
+
+
+### Interactive component
+```{r interactive scales, echo = F, message=FALSE, warning = FALSE}
+Gemiddelde_Goleweb_interactief<- Goleweb_schalen_clean%>%
+ summarise( Diversity= round(mean(Diversiteit, na.rm = TRUE),2),
+            Cooperation = round(mean(Samenwerken, na.rm = TRUE),2),
+            Communication = round(mean(Communicatie, na.rm = TRUE),2),
+            Empathy = round(mean(Inlevingsvermogen, na.rm = TRUE),2))
+
+
+Mediaan_Goleweb_interactief<- Goleweb_schalen_clean%>%
+ summarise( Diversity= round(median(Diversiteit, na.rm = TRUE),2),
+            Cooperation = round(median(Samenwerken, na.rm = TRUE),2),
+            Communication = round(median(Communicatie, na.rm = TRUE),2),
+            Empathy = round(median(Inlevingsvermogen, na.rm = TRUE),2))
+
+sd_Goleweb_interactief<- Goleweb_schalen_clean%>%
+ summarise( Diversity= round(sd(Diversiteit, na.rm = TRUE),2),
+            Cooperation = round(sd(Samenwerken, na.rm = TRUE),2),
+            Communication = round(sd(Communicatie, na.rm = TRUE),2),
+            Empathy = round(sd(Inlevingsvermogen, na.rm = TRUE),2))
+
+Skewness_Goleweb_interactief<- Goleweb_schalen_clean%>%
+ summarise( Diversity= round(skewness(Diversiteit, na.rm = TRUE),2),
+            Cooperation = round(skewness(Samenwerken, na.rm = TRUE),2),
+            Communication = round(skewness(Communicatie, na.rm = TRUE),2),
+            Empathy = round(skewness(Inlevingsvermogen, na.rm = TRUE),2))
+
+Kurtosis_Goleweb_interactief<- Goleweb_schalen_clean%>%
+ summarise( Diversity= round(kurtosis(Diversiteit, na.rm = TRUE),2),
+            Cooperation = round(kurtosis(Samenwerken, na.rm = TRUE),2),
+            Communication = round(kurtosis(Communicatie, na.rm = TRUE),2),
+            Empathy = round(kurtosis(Inlevingsvermogen, na.rm = TRUE),2))
+
+Maten <-  c("Mean", "Median", "Standard Deviation", "Skewness", "Kurtosis")
+descriptives_KYSS_interactive <- bind_rows(Gemiddelde_Goleweb_interactief, Mediaan_Goleweb_interactief, sd_Goleweb_interactief, Skewness_Goleweb_interactief, Kurtosis_Goleweb_interactief)
+
+Table_interactive <- bind_cols(Maten, descriptives_KYSS_interactive)
+Table_interactive <- flextable(Table_interactive)
+Table_interactive <-set_caption(Table_interactive, caption = "Table 4: Descriptives Scales belonging to interactive component in KYSS model")
+autofit(Table_interactive)
+
+```
+
+### Problem Solving component
+
+```{r problem solving, echo = F, message=FALSE, warning = FALSE}
+Gemiddelde_Goleweb_problem <- Goleweb_schalen_clean%>%
+ summarise( Result_oriented= round(mean(Resultaatsgerichtheid, na.rm = TRUE),2),
+            Digital_skills = round(mean(Digitale_vaardigheden, na.rm = TRUE),2),
+            Flexibility = round(mean(Flexibiliteit, na.rm = TRUE),2),
+            Customer_oriented = round(mean(Klantgerichtheid, na.rm = TRUE),2))
+
+
+Mediaan_Goleweb_problem<- Goleweb_schalen_clean%>%
+ summarise( Result_oriented= round(median(Resultaatsgerichtheid, na.rm = TRUE),2),
+            Digital_skills = round(median(Digitale_vaardigheden, na.rm = TRUE),2),
+            Flexibility = round(median(Flexibiliteit, na.rm = TRUE),2),
+            Customer_oriented = round(median(Klantgerichtheid, na.rm = TRUE),2))
+
+
+sd_Goleweb_problem<- Goleweb_schalen_clean%>%
+ summarise( Result_oriented= round(sd(Resultaatsgerichtheid, na.rm = TRUE),2),
+            Digital_skills = round(sd(Digitale_vaardigheden, na.rm = TRUE),2),
+            Flexibility = round(sd(Flexibiliteit, na.rm = TRUE),2),
+            Customer_oriented = round(sd(Klantgerichtheid, na.rm = TRUE),2))
+
+
+Skewness_Goleweb_problem<- Goleweb_schalen_clean%>%
+ summarise( Result_oriented= round(skewness(Resultaatsgerichtheid, na.rm = TRUE),2),
+            Digital_skills = round(skewness(Digitale_vaardigheden, na.rm = TRUE),2),
+            Flexibility = round(skewness(Flexibiliteit, na.rm = TRUE),2),
+            Customer_oriented = round(skewness(Klantgerichtheid, na.rm = TRUE),2))
+
+Kurtosis_Goleweb_problem<- Goleweb_schalen_clean%>%
+ summarise( Result_oriented= round(kurtosis(Resultaatsgerichtheid, na.rm = TRUE),2),
+            Digital_skills = round(kurtosis(Digitale_vaardigheden, na.rm = TRUE),2),
+            Flexibility = round(kurtosis(Flexibiliteit, na.rm = TRUE),2),
+            Customer_oriented = round(kurtosis(Klantgerichtheid, na.rm = TRUE),2))
+
+
+
+descriptives_KYSS_problem <- bind_rows(Gemiddelde_Goleweb_problem, Mediaan_Goleweb_problem, sd_Goleweb_problem, Skewness_Goleweb_problem, Kurtosis_Goleweb_problem)
+
+Table_problem <- bind_cols(Maten, descriptives_KYSS_problem)
+Table_problem <- flextable(Table_problem)
+Table_problem <-set_caption(Table_problem, caption = "Table 5: Descriptives Scales belonging to problem solving component in KYSS model")
+autofit(Table_problem)
+
+```
+
+### Information processing component
+
+```{r information processing, echo = F, , message=FALSE, warning = FALSE}
+Gemiddelde_Goleweb_information <- Goleweb_schalen_clean%>%
+ summarise( Analysing= round(mean(Analyseren, na.rm = TRUE),2),
+            Critical_thinking = round(mean(Kritisch_denken, na.rm = TRUE),2),
+            Creativity = round(mean(Creativiteit, na.rm = TRUE),2),
+            Willingness_to_learn = round(mean(Leerbereidheid, na.rm = TRUE),2))
+
+
+Mediaan_Goleweb_information<- Goleweb_schalen_clean%>%
+ summarise( Analysing= round(median(Analyseren, na.rm = TRUE),2),
+            Critical_thinking = round(median(Kritisch_denken, na.rm = TRUE),2),
+            Creativity = round(median(Creativiteit, na.rm = TRUE),2),
+            Willingness_to_learn = round(median(Leerbereidheid, na.rm = TRUE),2))
+
+
+sd_Goleweb_information<- Goleweb_schalen_clean%>%
+ summarise( Analysing= round(sd(Analyseren, na.rm = TRUE),2),
+            Critical_thinking = round(sd(Kritisch_denken, na.rm = TRUE),2),
+            Creativity = round(sd(Creativiteit, na.rm = TRUE),2),
+            Willingness_to_learn = round(sd(Leerbereidheid, na.rm = TRUE),2))
+
+
+
+Skewness_Goleweb_information<- Goleweb_schalen_clean%>%
+ summarise( Analysing= round(skewness(Analyseren, na.rm = TRUE),2),
+            Critical_thinking = round(skewness(Kritisch_denken, na.rm = TRUE),2),
+            Creativity = round(skewness(Creativiteit, na.rm = TRUE),2),
+            Willingness_to_learn = round(skewness(Leerbereidheid, na.rm = TRUE),2))
+
+
+Kurtosis_Goleweb_information<- Goleweb_schalen_clean%>%
+ summarise( Analysing= round(kurtosis(Analyseren, na.rm = TRUE),2),
+            Critical_thinking = round(kurtosis(Kritisch_denken, na.rm = TRUE),2),
+            Creativity = round(kurtosis(Creativiteit, na.rm = TRUE),2),
+            Willingness_to_learn = round(kurtosis(Leerbereidheid, na.rm = TRUE),2))
+
+
+
+
+descriptives_KYSS_information <- bind_rows(Gemiddelde_Goleweb_information, Mediaan_Goleweb_information, sd_Goleweb_information, Skewness_Goleweb_information, Kurtosis_Goleweb_information)
+
+Table_information <- bind_cols(Maten, descriptives_KYSS_information)
+Table_information <- flextable(Table_information)
+Table_information <-set_caption(Table_information, caption = "Table 6: Descriptives Scales belonging to information processing component in KYSS model")
+autofit(Table_information)
+
+```
+
+### Personal component
+
+```{r personal, echo = F, message=FALSE, warning = FALSE}
+Gemiddelde_Goleweb_personal <- Goleweb_schalen_clean%>%
+ summarise( Self_reflection = round(mean(Zelfreflectie, na.rm = TRUE),2),
+            Planning_Organising = round(mean(Plannen_organisatie, na.rm = TRUE),2),
+            Responsibility = round(mean(Verantwoordelijkheid, na.rm = TRUE),2),
+            Independence = round(mean(Zelfstandigheid, na.rm = TRUE),2))
+
+Mediaan_Goleweb_personal<- Goleweb_schalen_clean%>%
+ summarise( Self_reflection = round(median(Zelfreflectie, na.rm = TRUE),2),
+            Planning_Organising = round(median(Plannen_organisatie, na.rm = TRUE),2),
+            Responsibility = round(median(Verantwoordelijkheid, na.rm = TRUE),2),
+            Independence = round(median(Zelfstandigheid, na.rm = TRUE),2))
+
+sd_Goleweb_personal<- Goleweb_schalen_clean%>%
+ summarise( Self_reflection = round(sd(Zelfreflectie, na.rm = TRUE),2),
+            Planning_Organising = round(sd(Plannen_organisatie, na.rm = TRUE),2),
+            Responsibility = round(sd(Verantwoordelijkheid, na.rm = TRUE),2),
+            Independence = round(sd(Zelfstandigheid, na.rm = TRUE),2))
+
+Skewness_Goleweb_personal<- Goleweb_schalen_clean%>%
+ summarise( Self_reflection= round(skewness(Zelfreflectie, na.rm = TRUE),2),
+            Planning_Organising = round(skewness(Plannen_organisatie, na.rm = TRUE),2),
+            Responsibility = round(skewness(Verantwoordelijkheid, na.rm = TRUE),2),
+            Independence = round(skewness(Zelfstandigheid, na.rm = TRUE),2))
+
+Kurtosis_Goleweb_personal<- Goleweb_schalen_clean%>%
+ summarise( Self_reflection= round(kurtosis(Zelfreflectie, na.rm = TRUE),2),
+            Planning_Organising = round(kurtosis(Plannen_organisatie, na.rm = TRUE),2),
+            Responsibility = round(kurtosis(Verantwoordelijkheid, na.rm = TRUE),2),
+            Independence = round(kurtosis(Zelfstandigheid, na.rm = TRUE),2))
+
+descriptives_KYSS_personal <- bind_rows(Gemiddelde_Goleweb_personal, Mediaan_Goleweb_personal, sd_Goleweb_personal, Skewness_Goleweb_personal, Kurtosis_Goleweb_personal)
+
+Table_personal <- bind_cols(Maten, descriptives_KYSS_personal)
+Table_personal <- flextable(Table_personal)
+Table_personal <-set_caption(Table_personal, caption = "Table 7: Descriptives Scales belonging to personal component in KYSS model")
+autofit(Table_personal)
+
+```
+
+## Boxplots
+```{r boxplots, echo = F,  message=FALSE, warning = FALSE}
+Goleweb_wide <-Goleweb_schalen_clean%>%
+  select(Gebruikersnaam, Creativiteit:Inlevingsvermogen)
+
+colnames(Goleweb_wide) <- c('Gebruikersnaam', 'Creativity', 'Diversity', 'Flexibility', 'Planning_organising', 'Result_oriented', 'Cooperation', 'Communication', 'Digital_skills', 'Customer_oriented', 'Self_reflection', 'Independence', 'Responsibility', 'Willingness_to_learn', 'Analysing', 'Critical_thinking', 'Empathy')
+
+
+
+Goleweb_long <- Goleweb_wide %>%
+  dplyr::select(Gebruikersnaam, Communication, Diversity, Cooperation, Empathy, Result_oriented, Digital_skills, Flexibility, Customer_oriented, Analysing, Creativity, Critical_thinking, Willingness_to_learn, Self_reflection, Planning_organising, Responsibility, Independence) %>%
+  pivot_longer(-Gebruikersnaam, names_to = "Schaal", values_to = "Waarde")
+
+ggplot (data = Goleweb_long, mapping = aes(x = Schaal, y = Waarde, fill = Schaal)) +
+  geom_boxplot(show.legend = F) +
+  stat_summary(fun=mean, geom="point", color="red", size=2, show.legend = F) +
+  labs(title="Boxplots beschrijvende statistieken KYSS-schalen",
+        x ="KYSS-Schalen", y = "scores (1-5)")+
+  scale_x_discrete(limits=c("Communication", "Diversity", "Cooperation", "Empathy", "Result_oriented", "Digital_skills", "Flexibility", "Customer_oriented", "Analysing", "Creativity", "Critical_thinking", "Willingness_to_learn", "Self_reflection", "Planning_organising", "Responsibility", "Independence")) +
+  scale_fill_grey(start = 0.3, end = 0.9) +
+  coord_flip()
+
+```
+
+
+## Correlations
+```{r correlations, echo = F, message=FALSE, warning = FALSE, fig.width=10,fig.height=11}
+Cor_KYSS_Goleweb <- Goleweb_wide %>%
+  dplyr::select(Communication, Diversity, Cooperation, Empathy, Result_oriented, Digital_skills, Flexibility, Customer_oriented, Analysing, Creativity, Critical_thinking, Willingness_to_learn, Self_reflection, Planning_organising, Responsibility, Independence) %>%
+  dplyr::filter(!is.na(Communication)) %>%
+  dplyr::filter(!is.na(Diversity)) %>%
+  dplyr::filter(!is.na(Cooperation)) %>%
+  dplyr::filter(!is.na(Empathy)) %>%
+  dplyr::filter(!is.na(Result_oriented)) %>%
+  dplyr::filter(!is.na(Digital_skills)) %>%
+  dplyr::filter(!is.na(Flexibility)) %>%
+  dplyr::filter(!is.na(Customer_oriented)) %>%
+  dplyr::filter(!is.na(Analysing)) %>%
+  dplyr::filter(!is.na(Creativity)) %>%
+  dplyr::filter(!is.na(Critical_thinking)) %>%
+  dplyr::filter(!is.na(Willingness_to_learn)) %>%
+  dplyr::filter(!is.na(Self_reflection)) %>%
+  dplyr::filter(!is.na(Planning_organising)) %>%
+  dplyr::filter(!is.na(Responsibility)) %>%
+  dplyr::filter(!is.na(Independence))
+
+Matrix_KYSS_Goleweb<- cor(Cor_KYSS_Goleweb)
+
+ggcorrplot(Matrix_KYSS_Goleweb, method = "square", type = "upper", colors=c( "#FF9F23", "White", "#2683C6"), lab=TRUE, lab_col = "grey25", legend.title = " Sterkte correlatie", title = "Samenhang KYSS Schalen in GOLEWEB")
+
+
+```
+
+
+## Predictive analyses using Gender as predictor
+
+```{r ANOVA gender, Echo = F, echo = F, message=FALSE, warning = FALSE }
+ Goleweb_schalen_gender <- Goleweb_schalen_clean %>%
+ dplyr::select(Gender, Creativiteit:Inlevingsvermogen) 
+
+
+colnames(Goleweb_schalen_gender) <- c('Gender', 'Creativity', 'Diversity', 'Flexibility', 'Planning_organising', 'Result_oriented', 'Cooperation', 'Communication', 'Digital_skills', 'Customer_oriented', 'Self_reflection', 'Independence', 'Responsibility', 'Willingness_to_learn', 'Analysing', 'Critical_thinking', 'Empathy')
+
+
+
+anova_gender  <- Goleweb_schalen_gender %>%
+    tbl_summary(
+    by = Gender,
+    statistic = list(all_continuous() ~ "{mean} ({sd})"),
+    missing = 'no') %>%
+    add_p (test = everything() ~ "aov")
+  
+table_anova_gender <- as_flex_table(anova_gender)
+table_anova_gender <-set_caption(table_anova_gender, caption = "Table 6.1: ANOVA analyses with gender as predictor and scales in KYSS survey as dependent")
+autofit(table_anova_gender)
+
+```
+Several significant results are observed. However, problems with measurement invariance prohibit interpreting significant results for *Digital skills*, *Customer Orientation* and *Willingness to Learn*. They also caution interpreting results for *Self-Reflection* and *Responsibility*. Based on the results of the  measurement invariance analyses for *Diversity*, *Empathy*, *Analysing*, *Creativity*, *Planning and Organising* and *Independence*, means can be compared across gender for these scales. To help interpret the importance of these effects, effect sizes are provided for the latter scales in *Tables 6.2* to *6.9*.
+
+Results demonstrate small effects for *Diversity*, *Empathy*, *Planning and Organising* and *Responsibility*. For each scale between 2 and 3 percent of differences in scores can be attributed to gender. In each instance females exhibit a significantly larger score compared to males. 
+
+
+```{r ANOVA diversity gender, echo = F,  message=FALSE, warning = FALSE}
+anova_diversity_gender <- aov(formula = Diversity ~ factor(Gender), 
+                        data = Goleweb_schalen_gender)
+
+effect_diversity_gender <- effectsize(anova_diversity_gender)
+effect_diversity_gender$Eta2 <- round(effect_diversity_gender$Eta2, 3)
+effect_diversity_gender$CI_low <- round(effect_diversity_gender$CI_low, 3)
+effect_diversity_gender$CI_high <- round(effect_diversity_gender$CI_high, 3)
+
+
+set_caption(flextable(effect_diversity_gender), caption = "Table 6.2: Eta squared measurement for effect size for the scale **Diversity**")
+
+```
+
+
+```{r ANOVA empathy gender, echo = F,  message=FALSE, warning = FALSE}
+anova_empathy_gender <- aov(formula = Empathy ~ factor(Gender), 
+                        data = Goleweb_schalen_gender)
+
+effect_empathy_gender <- effectsize(anova_empathy_gender)
+effect_empathy_gender$Eta2 <- round(effect_empathy_gender$Eta2, 3)
+effect_empathy_gender$CI_low <- round(effect_empathy_gender$CI_low, 3)
+effect_empathy_gender$CI_high <- round(effect_empathy_gender$CI_high, 3)
+
+set_caption(flextable(effect_empathy_gender), caption = "Table 6.3: Eta squared measurement for effect size for the scale **Empathy**")
+
+```
+
+
+
+```{r ANOVA analysing gender, echo = F,  message=FALSE, warning = FALSE}
+anova_analysing_gender <- aov(formula = Analysing ~ factor(Gender), 
+                        data = Goleweb_schalen_gender)
+
+effect_analysing_gender <- effectsize(anova_analysing_gender)
+effect_analysing_gender$Eta2 <- round(effect_analysing_gender$Eta2, 3)
+effect_analysing_gender$CI_low <- round(effect_analysing_gender$CI_low, 3)
+effect_analysing_gender$CI_high <- round(effect_analysing_gender$CI_high, 3)
+
+set_caption(flextable(effect_analysing_gender), caption = "Table 6.4: Eta squared measurement for effect size for the scale **Analysing**")
+
+```
+
+```{r ANOVA Creativity gender, echo = F,  message=FALSE, warning = FALSE}
+anova_Creativity_gender <- aov(formula = Creativity ~ factor(Gender), 
+                        data = Goleweb_schalen_gender)
+
+effect_Creativity_gender <- effectsize(anova_Creativity_gender)
+effect_Creativity_gender$Eta2 <- round(effect_Creativity_gender$Eta2, 3)
+effect_Creativity_gender$CI_low <- round(effect_Creativity_gender$CI_low, 3)
+effect_Creativity_gender$CI_high <- round(effect_Creativity_gender$CI_high, 3)
+
+set_caption(flextable(effect_Creativity_gender), caption = "Table 6.5: Eta squared measurement for effect size for the scale **Creativity**")
+
+```
+
+
+```{r ANOVA Self_reflection gender, echo = F,  message=FALSE, warning = FALSE}
+anova_Self_reflection_gender <- aov(formula = Self_reflection ~ factor(Gender), 
+                        data = Goleweb_schalen_gender)
+
+effect_Self_reflection_gender <- effectsize(anova_Self_reflection_gender)
+effect_Self_reflection_gender$Eta2 <- round(effect_Self_reflection_gender$Eta2, 3)
+effect_Self_reflection_gender$CI_low <- round(effect_Self_reflection_gender$CI_low, 3)
+effect_Self_reflection_gender$CI_high <- round(effect_Self_reflection_gender$CI_high, 3)
+
+set_caption(flextable(effect_Self_reflection_gender), caption = "Table 6.6: Eta squared measurement for effect size for the scale **Self Reflection**")
+
+```
+
+
+
+```{r ANOVA Planning_organising gender, echo = F,  message=FALSE, warning = FALSE}
+anova_Planning_organising_gender <- aov(formula = Planning_organising ~ factor(Gender), 
+                        data = Goleweb_schalen_gender)
+
+effect_Planning_organising_gender <- effectsize(anova_Planning_organising_gender)
+effect_Planning_organising_gender$Eta2 <- round(effect_Planning_organising_gender$Eta2, 3)
+effect_Planning_organising_gender$CI_low <- round(effect_Planning_organising_gender$CI_low, 3)
+effect_Planning_organising_gender$CI_high <- round(effect_Planning_organising_gender$CI_high, 3)
+
+set_caption(flextable(effect_Planning_organising_gender), caption = "Table 6.7: Eta squared measurement for effect size for the scale **Planning and organising**")
+
+```
+
+```{r ANOVA Responsibility gender, echo = F,  message=FALSE, warning = FALSE}
+anova_Responsibility_gender <- aov(formula = Responsibility ~ factor(Gender), 
+                        data = Goleweb_schalen_gender)
+
+effect_Responsibility_gender <- effectsize(anova_Responsibility_gender)
+effect_Responsibility_gender$Eta2 <- round(effect_Responsibility_gender$Eta2, 3)
+effect_Responsibility_gender$CI_low <- round(effect_Responsibility_gender$CI_low, 3)
+effect_Responsibility_gender$CI_high <- round(effect_Responsibility_gender$CI_high, 3)
+
+set_caption(flextable(effect_Responsibility_gender), caption = "Table 6.8: Eta squared measurement for effect size for the scale **Responsibility**")
+
+```
+
+
+```{r ANOVA Independence gender, echo = F,  message=FALSE, warning = FALSE}
+anova_Independence_gender <- aov(formula = Independence ~ factor(Gender), 
+                        data = Goleweb_schalen_gender)
+
+effect_Independence_gender <- effectsize(anova_Independence_gender)
+effect_Independence_gender$Eta2 <- round(effect_Independence_gender$Eta2, 3)
+effect_Independence_gender$CI_low <- round(effect_Independence_gender$CI_low, 3)
+effect_Independence_gender$CI_high <- round(effect_Independence_gender$CI_high, 3)
+
+set_caption(flextable(effect_Independence_gender), caption = "Table 6.9: Eta squared measurement for effect size for the scale **Independence**")
+
+```
+
+

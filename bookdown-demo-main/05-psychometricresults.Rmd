@@ -1,0 +1,686 @@
+# Results Psychometric Analyses per Scale
+
+
+## Communication
+
+### CFA
+```{r CFA Communicating, echo=F}
+Model_Com<-'
+Communicatie=~K_Comm01+
+K_Comm02+
+K_Comm03+
+K_Comm04+
+K_Comm05+
+K_Comm06+
+K_Comm07
+'
+
+Fit_Com_G <- cfa(model = Model_Com, data = Goleweb_KYSS, estimator="MLM")
+sem_fitmeasures(Fit_Com_G)
+```
+
+### Measurement invariance across Gender
+```{r MI communicating gender, echo = F, warning = FALSE}
+measurementInvariance(model = Model_Com, data=Goleweb_KYSS, group="Gender", estimator="MLM")
+
+```
+
+### Measurement invariance across Institutions
+```{r MI communicating institutions, echo = F, warning = FALSE}
+
+
+```
+MODEL did not converge ... still have to check this out
+
+### Reliability
+```{r Communicating, echo = F}
+Com_items <- dplyr::select(Goleweb_KYSS, K_Comm01, K_Comm02, K_Comm03, K_Comm04, K_Comm05, K_Comm06, K_Comm07)
+Rel_Com <- psych::alpha(Com_items)
+
+colformat_double(flextable(Rel_Com$total), digits = 2)
+```
+
+
+## Diversity
+
+### CFA
+```{r CFA Diversity, echo=F}
+Model_Div<-'
+Diversiteit=~K_Divers01+
+K_Divers02+
+K_Divers03+
+K_Divers04+
+K_Divers05+
+K_Divers06
+'
+Fit_Div_G <- cfa(model = Model_Div, data = Goleweb_KYSS, estimator="MLM")
+# summary(Fit_Div_G, fit.measures = TRUE, standardized=TRUE)
+
+sem_fitmeasures(Fit_Div_G)
+
+```
+Fit measures demonstrate inadequate model fit. Modification indices pointed out that allowing covariance between items K_Divers02 and K_Divers04 would improve model fit.
+
+```{r CFA Diversity 2, echo=F}
+Model_Div_2<-'
+Diversiteit=~K_Divers01+
+K_Divers02+
+K_Divers03+
+K_Divers04+
+K_Divers05+
+K_Divers06
+K_Divers02 ~~ K_Divers04'
+
+Fit_Div_G2 <- cfa(model = Model_Div_2, data = Goleweb_KYSS, estimator="MLM")
+
+sem_fitmeasures(Fit_Div_G2)
+
+```
+Fit measures demonstrate that allowing covariance resulted in adequate model-fit. Analyses also pointed that the second model is significantly better than the first.
+
+```{r CFA Diversity 3, echo=F}
+
+compare_div <- anova (Fit_Div_G, Fit_Div_G2)
+
+flextable(compare_div)
+
+```
+
+### Measurement invariance across Gender
+```{r MI diversity gender, echo = F, warning = FALSE}
+measurementInvariance(model = Model_Div_2, data=Goleweb_KYSS, group="Gender", estimator="MLM")
+
+```
+
+### Measurement invariance across Institutions
+```{r MI diversity institutions, echo = F, warning = FALSE}
+measurementInvariance(model = Model_Div_2, data=Goleweb_KYSS, group="Institution", estimator="MLM")
+
+```
+
+### Reliability
+
+```{r rel Diversity, echo = F}
+Div_items_G <- dplyr::select(Goleweb_KYSS, K_Divers01, K_Divers02, K_Divers03, K_Divers04, K_Divers05, K_Divers06)
+  rel_div <- psych::alpha(Div_items_G) 
+  
+  
+colformat_double(flextable(rel_div$total), digits = 2)
+```
+
+
+## Cooperation
+
+### CFA
+```{r CFA Cooperating, echo=F}
+Model_Sam<-'
+Samenwerken=~K_Samen01+
+K_Samen02+
+K_Samen03+
+K_Samen04+
+K_Samen05+
+K_Samen06
+'
+
+Fit_Sam_G <- cfa(model = Model_Sam, data = Goleweb_KYSS, estimator="MLM")
+sem_fitmeasures(Fit_Sam_G)
+```
+
+### Measurement invariance across Gender
+```{r MI cooperating gender, echo = F, warning = FALSE}
+measurementInvariance(model = Model_Sam, data=Goleweb_KYSS, group="Gender", estimator="MLM")
+
+```
+
+### Measurement invariance across Institutions
+```{r MI cooperating institutions, echo = F, warning = FALSE}
+measurementInvariance(model = Model_Sam, data=Goleweb_KYSS, group="Institution", estimator="MLM")
+
+```
+
+### Reliability
+```{r cooperation, echo = F}
+Sam_items_G <- dplyr::select(Goleweb_KYSS, K_Samen01, K_Samen02, K_Samen03, K_Samen04, K_Samen05, K_Samen06)
+Rel_Sam <- psych::alpha(Sam_items_G)
+
+colformat_double(flextable(Rel_Sam$total), digits = 2)
+```
+
+
+## Empathy
+
+### CFA
+```{r CFA Empathy, echo=F}
+Model_Inl<-'
+Inleving=~K_Inlev01+
+K_Inlev02+
+K_Inlev03+
+K_Inlev04+
+K_Inlev05+
+K_Inlev06
+'
+
+Fit_Inl_G <- cfa(model = Model_Inl, data = Goleweb_KYSS, estimator="MLM")
+sem_fitmeasures(Fit_Inl_G)
+```
+
+### Measurement invariance across Gender
+```{r MI empathy gender, echo = F, warning = FALSE}
+measurementInvariance(model = Model_Inl, data=Goleweb_KYSS, group="Gender", estimator="MLM")
+
+```
+
+### Measurement invariance across Institutions
+```{r MI empathy institutions, echo = F, warning = FALSE}
+measurementInvariance(model = Model_Inl, data=Goleweb_KYSS, group="Institution", estimator="MLM")
+
+```
+
+### Reliability
+```{r reliability empathy, echo = F}
+Inl_items_G <- dplyr::select(Goleweb_KYSS, K_Inlev01, K_Inlev02, K_Inlev03, K_Inlev04, K_Inlev05, K_Inlev06)
+Rel_Inl <- psych::alpha(Inl_items_G)
+
+colformat_double(flextable(Rel_Inl$total), digits = 2)
+```
+
+
+## Result oriented working
+
+### CFA
+```{r CFA Result oriented working, echo=F}
+Model_Res<-'
+Resultaatgerichtheid=~K_Result01+
+K_Result02+
+K_Result03+
+K_Result04+
+K_Result05+
+K_Result06+
+K_Result07
+'
+
+Fit_Res_G <- cfa(model = Model_Res, data = Goleweb_KYSS, estimator="MLM")
+sem_fitmeasures(Fit_Res_G)
+```
+
+### Measurement invariance across Gender
+```{r MI result gender, echo = F, warning = FALSE}
+measurementInvariance(model = Model_Res, data=Goleweb_KYSS, group="Gender", estimator="MLM")
+
+```
+
+### Measurement invariance across Institutions
+```{r MI result institutions, echo = F, warning = FALSE}
+measurementInvariance(model = Model_Res, data=Goleweb_KYSS, group="Institution", estimator="MLM")
+
+```
+
+### Reliability
+```{r reliability result oriented, echo = F}
+Res_items_G <- dplyr::select(Goleweb_KYSS, K_Result01, K_Result02, K_Result03, K_Result04, K_Result05, K_Result06, K_Result07)
+Rel_Res <- psych::alpha(Res_items_G)
+
+colformat_double(flextable(Rel_Res$total), digits = 2)
+```
+
+
+## Digital Skills
+
+### CFA
+```{r CFA Digital skills, echo=F}
+Model_Dig<-'
+Digitale=~K_DigVa01+
+K_DigVa02+
+K_DigVa03+
+K_DigVa04
+'
+
+Fit_Dig_G <- cfa(model = Model_Dig, data = Goleweb_KYSS, estimator="MLM")
+sem_fitmeasures(Fit_Dig_G)
+```
+
+### Measurement invariance across Gender
+```{r MI digital gender, echo = F, warning = FALSE}
+measurementInvariance(model = Model_Dig, data=Goleweb_KYSS, group="Gender", estimator="MLM")
+
+```
+
+### Measurement invariance across Institutions
+```{r MI digital institutions, echo = F, warning = FALSE}
+measurementInvariance(model = Model_Dig, data=Goleweb_KYSS, group="Institution", estimator="MLM")
+
+```
+
+### Reliability
+```{r reliability digital, echo = F}
+Digit_items_G <- dplyr::select(Goleweb_KYSS, K_DigVa01, K_DigVa02, K_DigVa03, K_DigVa04)
+Rel_Digit <- psych::alpha(Digit_items_G)
+
+colformat_double(flextable(Rel_Digit$total), digits = 2)
+```
+
+
+## Flexibility
+
+### CFA
+```{r CFA Flexibility, echo=F}
+Model_Fle<-'
+Flexibiliteit=~K_Flex01+
+K_Flex02+
+K_Flex03+
+K_Flex04+
+K_Flex05+
+K_Flex06
+'
+Fit_Fle_G <- cfa(model = Model_Fle, data = Goleweb_KYSS, estimator="MLM")
+
+sem_fitmeasures(Fit_Fle_G)
+```
+
+### Measurement invariance across Gender
+```{r MI flexibility gender, echo = F, warning = FALSE}
+measurementInvariance(model = Model_Fle, data=Goleweb_KYSS, group="Gender", estimator="MLM")
+
+```
+
+### Measurement invariance across Institutions
+```{r MI flexibility institutions, echo = F, warning = FALSE}
+measurementInvariance(model = Model_Fle, data=Goleweb_KYSS, group="Institution", estimator="MLM")
+
+```
+
+### Reliability
+```{r reliability Flexibility, echo = F}
+Fle_items_G <- dplyr::select(Goleweb_KYSS, K_Flex01, K_Flex02, K_Flex03,  K_Flex04,  K_Flex05, K_Flex06)
+rel_Fle <- psych::alpha(Fle_items_G)
+
+colformat_double(flextable(rel_Fle$total), digits = 2)
+```
+
+
+## Customer orientation
+
+### CFA
+```{r CFA Customer orientation, echo=F}
+Model_Kla<-'
+Klantgerichtheid=~K_Klant01+
+K_Klant02+
+K_Klant03+
+K_Klant04+
+K_Klant05+
+K_Klant06
+'
+
+Fit_Kla_G <- cfa(model = Model_Kla, data = Goleweb_KYSS, estimator="MLM")
+sem_fitmeasures(Fit_Kla_G)
+```
+
+### Measurement invariance across Gender
+```{r MI customer gender, echo = F, warning = FALSE}
+measurementInvariance(model = Model_Kla, data=Goleweb_KYSS, group="Gender", estimator="MLM")
+
+```
+
+### Measurement invariance across Institutions
+```{r MI customer institutions, echo = F, warning = FALSE}
+measurementInvariance(model = Model_Kla, data=Goleweb_KYSS, group="Institution", estimator="MLM")
+
+```
+
+### Reliability
+```{r reliability customer, echo = F}
+Klant_items_G <- dplyr::select(Goleweb_KYSS, K_Klant01, K_Klant02, K_Klant03, K_Klant04, K_Klant05, K_Klant06)
+Rel_Klant <- psych::alpha(Klant_items_G)
+
+colformat_double(flextable(Rel_Klant$total), digits = 2)
+```
+
+
+## Analysing
+
+### CFA
+```{r CFA Analysing, echo=F}
+Model_Ana<-'
+Analyseren=~K_Anal01+
+K_Anal02+
+K_Anal03+
+K_Anal04+
+K_Anal05
+'
+
+Fit_Ana_G <- cfa(model = Model_Ana, data = Goleweb_KYSS, estimator="MLM")
+sem_fitmeasures(Fit_Ana_G)
+```
+
+### Measurement invariance across Gender
+```{r MI analysing gender, echo = F, warning = FALSE}
+measurementInvariance(model = Model_Ana, data=Goleweb_KYSS, group="Gender", estimator="MLM")
+
+```
+
+### Measurement invariance across Institutions
+```{r MI analysing institutions, echo = F, warning = FALSE}
+measurementInvariance(model = Model_Ana, data=Goleweb_KYSS, group="Institution", estimator="MLM")
+
+```
+
+### Reliability
+```{r reliability analysing, echo = F}
+Anal_items_G <- dplyr::select(Goleweb_KYSS, K_Anal01, K_Anal02, K_Anal03, K_Anal04, K_Anal05)
+Rel_Anal <- psych::alpha(Anal_items_G)
+
+colformat_double(flextable(Rel_Anal$total), digits = 2)
+```
+
+
+## Creativity
+
+### CFA
+
+```{r CFA Creativity, echo=F}
+Model_Cre<-'
+Creativiteit=~K_Crea01+
+K_Crea02+
+K_Crea03+
+K_Crea04+
+K_Crea05+
+K_Crea06'
+
+Fit_Cre_G <- cfa(model = Model_Cre, data = Goleweb_KYSS, estimator="MLM")
+# summary(Fit_Cre_G, fit.measures = TRUE, standardized=TRUE) 
+
+sem_fitmeasures(Fit_Cre_G)
+
+```
+
+### Measurement invariance across Gender
+```{r MI creativity gender, echo = F, warning = FALSE}
+MI_creativiteit<-measurementInvariance(model = Model_Cre, data=Goleweb_KYSS, group="Gender", estimator="MLM")
+
+```
+
+### Measurement invariance across Institutions
+```{r MI creativity institutions, echo = F, warning = FALSE}
+measurementInvariance(model = Model_Cre, data=Goleweb_KYSS, group="Institution", estimator="MLM")
+
+```
+
+### Reliability
+
+```{r reliability creativity, echo = F}
+Cre_items_G <- dplyr::select(Goleweb_KYSS, K_Crea01,K_Crea02, K_Crea03, K_Crea04, K_Crea05, K_Crea06)
+rel_Cre <- psych::alpha(Cre_items_G)
+
+colformat_double(flextable(rel_Cre$total), digits = 2)
+  
+```
+
+
+## Critical Thinking
+
+### CFA
+```{r CFA Critical Thinking, echo=F}
+Model_Kri<-'
+Kritischdenken=~K_Kriti01+
+K_Kriti02+
+K_Kriti03+
+K_Kriti04+
+K_Kriti05
+'
+Fit_Kri_G <- cfa(model = Model_Kri, data = Goleweb_KYSS, estimator="MLM")
+sem_fitmeasures(Fit_Kri_G)
+```
+
+### Measurement invariance across Gender
+```{r MI critical gender, echo = F, warning = FALSE}
+measurementInvariance(model = Model_Kri, data=Goleweb_KYSS, group="Gender", estimator="MLM")
+
+```
+
+### Measurement invariance across Institutions
+```{r MI critical institutions, echo = F, warning = FALSE}
+measurementInvariance(model = Model_Kri, data=Goleweb_KYSS, group="Institution", estimator="MLM")
+
+```
+
+### Reliability
+```{r reliability critical, echo = F}
+Kriti_items_G <- dplyr::select(Goleweb_KYSS, K_Kriti01, K_Kriti02, K_Kriti03, K_Kriti04, K_Kriti05)
+Rel_Kriti <- psych::alpha(Kriti_items_G)
+
+colformat_double(flextable(Rel_Kriti$total), digits = 2)
+```
+
+
+## Willingness to learn
+
+### CFA
+```{r CFA Willingness to learn, echo=F}
+Model_Leer<-'
+Leerbereidheid=~K_Leer01+
+K_Leer02+
+K_Leer03+
+K_Leer04+
+K_Leer05+
+K_Leer06
+'
+Fit_Leer_G <- cfa(model = Model_Leer, data = Goleweb_KYSS, estimator="MLM")
+sem_fitmeasures(Fit_Leer_G)
+```
+
+### Measurement invariance across Gender
+```{r MI Learning gender, echo = F, warning = FALSE}
+measurementInvariance(model = Model_Leer, data=Goleweb_KYSS, group="Gender", estimator="MLM")
+
+```
+
+### Measurement invariance across Institutions
+```{r MI Learning institutions, echo = F, warning = FALSE}
+measurementInvariance(model = Model_Leer, data=Goleweb_KYSS, group="Institution", estimator="MLM")
+
+```
+
+### Reliability
+```{r reliability learning}
+Leer_items_G <- dplyr::select(Goleweb_KYSS, K_Leer01, K_Leer02, K_Leer03, K_Leer04, K_Leer05, K_Leer06)
+Rel_Leer <- psych::alpha(Leer_items_G)
+
+colformat_double(flextable(Rel_Leer$total), digits = 2)
+```
+
+
+## Self-reflection
+
+### CFA
+```{r CFA Self-reflection, echo=F}
+    Model_Ref_G<-'
+Zelfreflectie=~K_Refl01+
+K_Refl02+
+K_Refl03+
+K_Refl04+
+K_Refl05+
+K_Relf06'
+
+Fit_Ref_G <- cfa(model = Model_Ref_G, data = Goleweb_KYSS, estimator="MLM")
+sem_fitmeasures(Fit_Ref_G)
+```
+Fit measures demonstrate inadequate model fit. Modification indices pointed out that allowing covariance between items K_Refl03 and K_Refl04 would improve model fit.
+
+```{r CFA reflection 2, echo=F}
+Model_Ref_G2<-'
+Zelfreflectie=~K_Refl01+
+K_Refl02+
+K_Refl03+
+K_Refl04+
+K_Refl05+
+K_Relf06
+K_Refl03~~K_Refl04'
+
+Fit_Ref_G2 <- cfa(model = Model_Ref_G2, data = Goleweb_KYSS, estimator="MLM")
+sem_fitmeasures(Fit_Ref_G2)
+
+```
+Fit measures demonstrate that allowing covariance resulted in adequate model-fit. Analyses also pointed that the second model is significantly better than the first.
+
+```{r CFA Reflection 3, echo=F}
+
+compare_Ref <- anova (Fit_Ref_G, Fit_Ref_G2)
+
+flextable(compare_Ref)
+
+```
+
+### Measurement invariance across Gender
+```{r MI Reflection gender, echo = F, warning = FALSE}
+measurementInvariance(model = Model_Ref_G2, data=Goleweb_KYSS, group="Gender", estimator="MLM")
+
+```
+
+### Measurement invariance across Institutions
+```{r MI Reflection institutions, echo = F, warning = FALSE}
+measurementInvariance(model = Model_Ref_G2, data=Goleweb_KYSS, group="Institution", estimator="MLM")
+
+```
+
+### Reliability
+```{r Reflection, echo = F}
+Ref_items_G <- dplyr::select(Goleweb_KYSS, K_Refl01, K_Refl02, K_Refl03, K_Refl04, K_Refl05, K_Relf06)
+Rel_Ref <- psych::alpha(Ref_items_G)
+
+colformat_double(flextable(Rel_Ref$total), digits = 2)
+```
+
+
+## Planning & Organising
+
+### CFA
+```{r CFA Planning & organising, echo=F}
+Model_Pla<-'
+Plannen=~K_Plan01+
+K_Plan02+
+K_Plan03+
+K_Plan04+
+K_Plan05+
+K_Plan06+
+K_Plan07
+'
+
+Fit_Pla_G <- cfa(model = Model_Pla, data = Goleweb_KYSS, estimator="MLM")
+
+sem_fitmeasures(Fit_Pla_G)
+```
+
+### Measurement invariance across Gender
+```{r MI planning gender, echo = F, warning = FALSE}
+measurementInvariance(model = Model_Pla, data=Goleweb_KYSS, group="Gender", estimator="MLM")
+
+```
+
+### Measurement invariance across Institutions
+```{r MI planning institutions, echo = F, warning = FALSE}
+measurementInvariance(model = Model_Pla, data = Goleweb_KYSS, group="Institution", estimator="MLM")
+
+```
+
+### Reliability
+```{r reliability Planning, echo = F}
+
+Pla_items_G <- dplyr::select(Goleweb_KYSS, K_Plan01, K_Plan02, K_Plan03, K_Plan04, K_Plan05, K_Plan06, K_Plan07)
+Rel_Pla <- psych::alpha(Pla_items_G)
+
+colformat_double(flextable(Rel_Pla$total), digits = 2)
+
+```
+
+
+## Responsibility
+
+### CFA
+```{r CFA Responsibility, echo=F}
+Model_Ver<-'
+Verantwoordelijkheid=~K_Vera01+
+K_Vera02+
+K_Vera03+
+K_Vera04
+'
+
+Fit_Ver_G <- cfa(model = Model_Ver, data = Goleweb_KYSS, estimator="MLM")
+sem_fitmeasures(Fit_Ver_G)
+```
+
+### Measurement invariance across Gender
+```{r MI responsibility gender, echo = F, warning = FALSE}
+measurementInvariance(model = Model_Ver, data=Goleweb_KYSS, group="Gender", estimator="MLM")
+
+```
+
+### Measurement invariance across Institutions
+```{r MI responsibility institutions, echo = F, warning = FALSE}
+measurementInvariance(model = Model_Ver, data=Goleweb_KYSS, group="Institution", estimator="MLM")
+
+```
+
+### Reliability
+```{r reliability responsibility, echo = F}
+Vera_items_G <- dplyr::select(Goleweb_KYSS, K_Vera01, K_Vera02, K_Vera03, K_Vera04)
+Rel_Vera <- psych::alpha(Vera_items_G)
+
+colformat_double(flextable(Rel_Vera$total), digits = 2)
+```
+
+
+## Independence
+
+### CFA
+```{r CFA Self-reliance, echo=F}
+Model_Zelf<-'
+Zelfstandigheid=~K_Zelf01+
+K_Zelf02+
+K_Zelf03+
+K_Zelf04+
+K_Zelf05+
+K_Zelf06
+'
+
+Fit_Zelf_G <- cfa(model = Model_Zelf, data = Goleweb_KYSS, estimator="MLM")
+sem_fitmeasures(Fit_Zelf_G)
+```
+
+Fit measures demonstrate inadequate model fit. Modification indices pointed out that allowing covariance between items K_Zelf02 and K_Zelf04 would improve model fit.
+
+```{r CFA Self-reliance 2, echo=F}
+Model_Zelf_2<-'
+Zelfstandigheid=~K_Zelf01+
+K_Zelf02+
+K_Zelf03+
+K_Zelf04+
+K_Zelf05+
+K_Zelf06
+K_Zelf02~~K_Zelf04'
+ Fit_Zelf_G2 <- cfa(model = Model_Zelf_2, data = Goleweb_KYSS, estimator="MLM")
+sem_fitmeasures(Fit_Zelf_G2)
+
+```
+
+### Measurement invariance across Gender
+```{r MI reliance gender, echo = F, warning = FALSE}
+measurementInvariance(model = Model_Zelf_2, data=Goleweb_KYSS, group="Gender", estimator="MLM")
+
+```
+
+### Measurement invariance across Institutions
+```{r MI reliance institutions, echo = F, warning = FALSE}
+measurementInvariance(model = Model_Zelf_2, data=Goleweb_KYSS, group="Institution", estimator="MLM")
+
+```
+
+### Reliability
+```{r reliability self-reliance, echo = F}
+Zelf_items_G <- dplyr::select(Goleweb_KYSS, K_Zelf01, K_Zelf02, K_Zelf03, K_Zelf04, K_Zelf05, K_Zelf06)
+Rel_Zelf <- psych::alpha(Zelf_items_G)
+
+colformat_double(flextable(Rel_Zelf$total), digits = 2)
+```
+
+
+## Conclusions Psychometric Analyses

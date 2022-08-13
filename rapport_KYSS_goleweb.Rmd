@@ -1,0 +1,1303 @@
+---
+title: Psychometric Report On the questionnaire Kickstart Your Soft Skills based on
+  the GOLEWEB database
+theme: Sandstone
+authors: Vanthournout, G., Hoefkans, A.
+output:
+  html_document:
+    number_sections: yes
+    toc: yes
+    toc_depth: 2
+    toc_float: yes
+  word_document:
+    toc: yes
+    toc_depth: '2'
+  pdf_document:
+    toc: yes
+    toc_depth: '2'
+organisation: AP University of Applied Sciences and Arts, Research group Data Driven
+  Learning and Innovation
+always_allow_html: yes
+---
+
+```{r setup,  include=FALSE}
+
+# Packages laden
+## Tidyverse packages
+### Laden en opslaan
+library ("WriteXLS")
+library(readxl)
+
+### Tidyverse
+library ("tidyverse")
+library ("ggplot2")
+library("dplyr")
+
+### Factoranalyses
+library ("lavaan")
+library ("semTools")
+
+
+### Inhoudelijke analyses
+library ("psych")
+library ("car")
+library ("fields")
+#library ("gmodels")
+#library ("rela")
+#library ("NbClust")
+ library("corrplot")
+ library("ggcorrplot")
+ library ("moments")
+library("gtsummary")
+library("effectsize")
+
+
+
+###Rapportage
+library ("tidyr")
+library ("data.table")
+library ("broom")
+library(kableExtra)
+library(flextable)
+library("semTable")
+library(semoutput)
+
+
+# Databastand inlezen
+## AP
+# setwd("C:/Users/p087468/Documents/AP/KYSS")
+
+#thuis
+Goleweb_KYSS <- read_delim("D:/Gert/Documents/kyss/test2.txt", 
+    delim = "\t", escape_double = FALSE, 
+    trim_ws = TRUE)
+
+
+Goleweb_KYSS <-Goleweb_KYSS %>%
+  dplyr::filter(Geslacht == 'm' | Geslacht == 'v') %>%
+  dplyr::filter(Instelling == 'AP Hogeschool' | Instelling == 'HOGENT' | Instelling == 'Hogeschool PXL - KYSS' | Instelling == 'Odisee' | Instelling == 'Thomas More') %>%
+  dplyr::mutate(Geslacht = replace(Geslacht, Geslacht == 'm', 'Male')) %>%
+  dplyr::mutate(Geslacht = replace(Geslacht, Geslacht == 'v', 'Female')) %>%
+  dplyr::rename (Gender = 'Geslacht', Institution = 'Instelling')
+
+Goleweb_schalen<-Goleweb_KYSS%>%
+  group_by(Gebruikersnaam)%>%
+  mutate(
+    Creativiteit = round(mean (c(K_Crea01,K_Crea02, K_Crea03, K_Crea04, K_Crea05, K_Crea06), na.rm = TRUE),2),
+    Diversiteit = round(mean (c(K_Divers01, K_Divers02, K_Divers03, K_Divers04, K_Divers05, K_Divers06),na.rm = TRUE),2),
+    Flexibiliteit = round(mean (c(K_Flex01, K_Flex02, K_Flex03,  K_Flex04,  K_Flex05, K_Flex06),na.rm = TRUE),2),
+    Plannen_organisatie = round(mean (c(K_Plan01, K_Plan02, K_Plan03, K_Plan04, K_Plan05, K_Plan06, K_Plan07),na.rm = TRUE),2),
+    Resultaatsgerichtheid = round(mean (c(K_Result01, K_Result02, K_Result03, K_Result04, K_Result05, K_Result06, K_Result07),na.rm = TRUE),2),
+    Samenwerken = round(mean (c(K_Samen01, K_Samen02, K_Samen03, K_Samen04, K_Samen05, K_Samen06),na.rm = TRUE),2),
+    Communicatie = round(mean (c(K_Comm01, K_Comm02, K_Comm03, K_Comm04, K_Comm05, K_Comm06, K_Comm07),na.rm = TRUE),2),
+    Digitale_vaardigheden = round(mean (c(K_DigVa01, K_DigVa02, K_DigVa03, K_DigVa04),na.rm = TRUE),2),
+    Klantgerichtheid = round(mean (c(K_Klant01, K_Klant02, K_Klant03, K_Klant04, K_Klant05, K_Klant06),na.rm = TRUE),2),
+    Zelfreflectie = round(mean (c(K_Refl01, K_Refl02, K_Refl03, K_Refl04, K_Refl05, K_Relf06),na.rm = TRUE),2),
+    Zelfstandigheid = round(mean (c(K_Zelf01, K_Zelf02, K_Zelf03, K_Zelf04, K_Zelf05, K_Zelf06),na.rm = TRUE),2),
+    Verantwoordelijkheid = round(mean (c(K_Vera01, K_Vera02, K_Vera03, K_Vera04),na.rm = TRUE),2),
+    Leerbereidheid = round(mean (c(K_Leer01, K_Leer02, K_Leer03, K_Leer04, K_Leer05, K_Leer06),na.rm = TRUE),2),
+    Analyseren = round(mean (c(K_Anal01, K_Anal02, K_Anal03, K_Anal04, K_Anal05),na.rm = TRUE),2),
+    Kritisch_denken = round(mean (c(K_Kriti01, K_Kriti02, K_Kriti03, K_Kriti04, K_Kriti05),na.rm = TRUE),2),
+    Inlevingsvermogen = round(mean (c(K_Inlev01, K_Inlev02, K_Inlev03, K_Inlev04, K_Inlev05, K_Inlev06),na.rm = TRUE),2)) %>%
+    ungroup()
+
+Goleweb_schalen_clean <- Goleweb_schalen %>%
+  dplyr::select(Institution, Gender, Gebruikersnaam, Creativiteit:Inlevingsvermogen)
+
+```
+# Introduction
+
+# The KYSS-model
+
+The theoretical framework on soft skills was developed during the KYSS-project [7]. In this project a literature review inventoried soft skills incorporated in existing soft skill-models. Subsequently, the top 25 of most frequently mentioned soft skills were prioritised by stakeholders in both the institute for higher education and the labour market. This resulted in a model of 16 soft skills organised in four overarching domains. These soft skills were deemed relevant for higher education and the workplace. *Figure 1* provides a schematic overview of the structure of the model, while *Table 1* contains a short description of the incorporated soft skills.
+
+![**Figure 1:** The KYSS model ](https://www.ap.be/sites/default/files/styles/extra_large/public/2021-06/kyss-model.png?itok=rbUq0vzX)
+
+```{r KYSS schalen, echo = F}
+KYSS_Scales <- read_excel("D:/Gert/Documents/kyss/KYSS_Scales.xlsx")
+
+Tabel_KYSS_scales <- flextable(KYSS_Scales)
+Tabel_KYSS_scales <-set_caption(Tabel_KYSS_scales, caption = "Table 1: overview KYSS-scales")
+autofit(Tabel_KYSS_scales)
+
+```
+
+
+# Research questions
+
+The following research questions are answered in the current psychometric report:
+
++ **RQ1:** Do scales in the KYSS-questionnaire have sufficient construct validity?
++ **RQ2:** Is the factor structure of the scales in the KYSS-questionnaire invariant across gender?
++ **RQ3:** Is the factor structure of the scales in the KYSS-questionnaire invariant across Higher education institution?
++ **RQ4:** Are the scales in the KYSS-questionnaire sufficiently reliable?
++ **RQ5:** What are descripitive statistics for the scales in the KYSS-questionnaire?
++ **RQ6:** How are the scales in the KYSS-questionnaire correlated?
++ **RQ7:** Does gender predict scores on the scales in the KYSS-questionnaire?
++ **RQ8:** Does Higer education institution predict scores on the scales in the KYSS-questionnaire?
+
+# Methodology
+
+## Sample
+
+```{r respondentaantallen, echo=F, include = FALSE}
+
+respondenten <-nrow(Goleweb_KYSS)
+Instellingen <- n_distinct (Goleweb_KYSS$Institution)
+
+
+```
+
+The sample for the current analysis consists of `r respondenten` students who filled in the KYSS-questionnaire using the GOLEWEB digital surveying tool. These pertain to `r Instellingen` institutions for higher education in Flanders. For informative purposes, frequency tables for the distribution of gender and higher education institutions are provided in *Table 2* and *Table 3* respectively.
+
+```{r frequentietabel Geslacht, echo=F}
+
+Frequentie_geslacht <- Goleweb_KYSS %>%
+group_by (Gender)%>%
+count() %>%
+  dplyr::mutate(Percentage = round((n /nrow(Goleweb_KYSS)*100),0)) %>%
+  ungroup()
+
+Tabel_gender <- flextable(Frequentie_geslacht)
+Tabel_gender <-set_caption(Tabel_gender, caption = "Table 2: Frequency table for gender")
+Tabel_gender
+```
+```{r frequentietabel instelling, echo=F}
+
+Frequentie_instelling <- Goleweb_KYSS %>%
+group_by (Institution)%>%
+count() %>%
+  dplyr::mutate(Percentage = round((n /nrow(Goleweb_KYSS)*100),0)) %>%
+  ungroup()
+
+Tabel_instelling <- flextable(Frequentie_instelling)
+Tabel_instelling <-set_caption(Tabel_instelling, caption = "Table 3: Frequency table for Institution")
+Tabel_instelling
+```
+
+Respondents  pertain to various course-programmes within these institutions and also vary year they were currently enrolled in. All students filled in the KYSS-questionnaire during the academic year 2021-2022.
+
+## Data analysis approach
+
+Analyses on **construct validity** were conducted using confirmatory factor analysis, using a maximum likelihood estimation with robust standard errors and a Satorra-Bentler scaled test statistic. In a first step, the validity of each separate scale was assessed, thereby using the *Comparative Fit Index (CFI)* and the *Root Mean Square Error of Approximation (RMSEA)* as primary fit statistics. Generally accepted cut-off points for good and acceptable model fit were applied (See *Table 3* for an overview)
+
+```{r cutoffs, echo=F}
+
+Fit_index <- c('Comparative fit index', 'Root Mean Square Error of Approximation')
+Acceptable_model_Fit <- c('> .900', '<.080')
+Good_model_Fit <-c('> .950', '<.050')
+
+cutoff <- data.frame(Fit_index, Acceptable_model_Fit, Good_model_Fit)
+set_caption(flextable(cutoff), caption = "Table 3: Cutoffs fit indices")
+
+```
+In the case of insufficient model fit, modification indices were analysed and used to enhance the model. To compare the models the *Bayesian Information Criterion (BIC)* and the *Akaike Information Criterion (AIC)* were used to compare the relative quality of the statistical models. For both criteria a beeter quality model is indicated by a lower value.
+
+Analyses on **measurement invariance** were conducted using Multigroup Confirmatory Factor Analysis. Measurement invariance analyses tests as to whether or not a construct (Scale) is measured similarly across sub-groups in a sample (e.g. do males and females conceive the concept of creativity in a similar way?).
+This entails:
+
++ (1) Looking at the overall quality of model fit when data is split into groups, as an indication that the same items load on the latent construct *(Configural Invariance)*
++ (2) Investigating whether factor loadings are equal across groups, indicating that the same items have a similar 'importance' for various groups *(Weak Invariance)*
++ (3) Exploring whether the intercepts of observed variables are equal across groups, indicating that various groups score items in a similar fashion *(Strong invariance)*
+
+Achieving strong invariance is a prerequisite for comparing scale-scores across groups. Otherwise put, lack of measurement invariance could lead to a biased interpretation of mean scores across groups, because differences can be due to differing interpretations of the concept and not to substantive differences between the groups.
+In Multigroup Confirmatory Factor Analysis, measurement invariance can be tested by looking at model fit indices and the change in model fit in increasingly restricted model. For configural invariance it is analysed as to whether models still achieve the above mentioned cut-off values *(Figure 3)* for good and acceptable model fit.
+Weak and Strong invariance are tested by subsequently constraining factor loading and item intercepts to be equal across groups and investigating their impact on model fit indices. Measurement invariance is assumed (by convenion) when decrease in model fit is below .01. In some cases results for different model fit indices contradict. It is then advised to interpret results with caution.
+If weak invariance is established but strong invariance could not be achieved, it is important to investigate how many items are problematic. If only a small number of items exhibit problems and the number of items in a scale is sufficiently large, it could be decided to delete the specific item from the scale or interpret substantive results with caution.
+
+**Reliability** analyses were conducted by measuring Cronbach's alpha measure for internal consistency. In line with conventions in social sciences a value of . 60 or higher is considered to indicate adequate reliability, while a value of at least .80 is considered as an indication of good quality.
+
+Scales that exhibit adequate construct valadity, invariance and reliability will be incorporated in **substantive analyses**. For each scale descriptive statistics for ech scale will be provided, including, mean, median, standard deviation, mean absolute deviation, skewness and kurtosis. Aditionally, descriptive statistics will be visualised using box- and whiskerplots.
+
+**Interrelations** between scales will be investigated using correlational analyses. The correlation coefficients will also be used as a measure of effect size, as indicated in *Table 4*
+
+```{r correlation indices, echo=F}
+Level <- c('Weak correlation', 'Moderate correlation', 'Strong correlation')
+Positive <- c('>.20', '>.30', '>.50')
+Negative <-c('<-.20', '<-.30', '<-.50')
+
+effect_cor <- data.frame(Level, Positive, Negative)
+set_caption(flextable(effect_cor), caption = "Table 4: Cutoffs strength correlations")
+```
+
+
+Finally **Substantive differences in scale scores across groups** will be explored using Analysis of Variance using respectively gender and institution as predictor and mean scale scores for eacht of the scales in the KYSS-questionnaire as dependents. As these aqnalyses are exploratory, no hypotheses off effect are formulated. In addition to sgnificance test partial Eta squared measures of effects size are computed. values of .01 or higher indicate a small effect, vallues of .08 or higher signify a moderate effect, while values of.14 or higher are an indication of a strong effect.
+
+
+# Results Psychometric Analyses per Scale
+
+
+## Communication
+
+### CFA
+```{r CFA Communicating, echo=F}
+Model_Com<-'
+Communicatie=~K_Comm01+
+K_Comm02+
+K_Comm03+
+K_Comm04+
+K_Comm05+
+K_Comm06+
+K_Comm07
+'
+
+Fit_Com_G <- cfa(model = Model_Com, data = Goleweb_KYSS, estimator="MLM")
+sem_fitmeasures(Fit_Com_G)
+```
+
+### Measurement invariance across Gender
+```{r MI communicating gender, echo = F, warning = FALSE}
+measurementInvariance(model = Model_Com, data=Goleweb_KYSS, group="Gender", estimator="MLM")
+
+```
+
+### Measurement invariance across Institutions
+```{r MI communicating institutions, echo = F, warning = FALSE}
+
+
+```
+MODEL did not converge ... still have to check this out
+
+### Reliability
+```{r Communicating, echo = F}
+Com_items <- dplyr::select(Goleweb_KYSS, K_Comm01, K_Comm02, K_Comm03, K_Comm04, K_Comm05, K_Comm06, K_Comm07)
+Rel_Com <- psych::alpha(Com_items)
+
+colformat_double(flextable(Rel_Com$total), digits = 2)
+```
+
+
+## Diversity
+
+### CFA
+```{r CFA Diversity, echo=F}
+Model_Div<-'
+Diversiteit=~K_Divers01+
+K_Divers02+
+K_Divers03+
+K_Divers04+
+K_Divers05+
+K_Divers06
+'
+Fit_Div_G <- cfa(model = Model_Div, data = Goleweb_KYSS, estimator="MLM")
+# summary(Fit_Div_G, fit.measures = TRUE, standardized=TRUE)
+
+sem_fitmeasures(Fit_Div_G)
+
+```
+Fit measures demonstrate inadequate model fit. Modification indices pointed out that allowing covariance between items K_Divers02 and K_Divers04 would improve model fit.
+
+```{r CFA Diversity 2, echo=F}
+Model_Div_2<-'
+Diversiteit=~K_Divers01+
+K_Divers02+
+K_Divers03+
+K_Divers04+
+K_Divers05+
+K_Divers06
+K_Divers02 ~~ K_Divers04'
+
+Fit_Div_G2 <- cfa(model = Model_Div_2, data = Goleweb_KYSS, estimator="MLM")
+
+sem_fitmeasures(Fit_Div_G2)
+
+```
+Fit measures demonstrate that allowing covariance resulted in adequate model-fit. Analyses also pointed that the second model is significantly better than the first.
+
+```{r CFA Diversity 3, echo=F}
+
+compare_div <- anova (Fit_Div_G, Fit_Div_G2)
+
+flextable(compare_div)
+
+```
+
+### Measurement invariance across Gender
+```{r MI diversity gender, echo = F, warning = FALSE}
+measurementInvariance(model = Model_Div_2, data=Goleweb_KYSS, group="Gender", estimator="MLM")
+
+```
+
+### Measurement invariance across Institutions
+```{r MI diversity institutions, echo = F, warning = FALSE}
+measurementInvariance(model = Model_Div_2, data=Goleweb_KYSS, group="Institution", estimator="MLM")
+
+```
+
+### Reliability
+
+```{r rel Diversity, echo = F}
+Div_items_G <- dplyr::select(Goleweb_KYSS, K_Divers01, K_Divers02, K_Divers03, K_Divers04, K_Divers05, K_Divers06)
+  rel_div <- psych::alpha(Div_items_G) 
+  
+  
+colformat_double(flextable(rel_div$total), digits = 2)
+```
+
+
+## Cooperation
+
+### CFA
+```{r CFA Cooperating, echo=F}
+Model_Sam<-'
+Samenwerken=~K_Samen01+
+K_Samen02+
+K_Samen03+
+K_Samen04+
+K_Samen05+
+K_Samen06
+'
+
+Fit_Sam_G <- cfa(model = Model_Sam, data = Goleweb_KYSS, estimator="MLM")
+sem_fitmeasures(Fit_Sam_G)
+```
+
+### Measurement invariance across Gender
+```{r MI cooperating gender, echo = F, warning = FALSE}
+measurementInvariance(model = Model_Sam, data=Goleweb_KYSS, group="Gender", estimator="MLM")
+
+```
+
+### Measurement invariance across Institutions
+```{r MI cooperating institutions, echo = F, warning = FALSE}
+measurementInvariance(model = Model_Sam, data=Goleweb_KYSS, group="Institution", estimator="MLM")
+
+```
+
+### Reliability
+```{r cooperation, echo = F}
+Sam_items_G <- dplyr::select(Goleweb_KYSS, K_Samen01, K_Samen02, K_Samen03, K_Samen04, K_Samen05, K_Samen06)
+Rel_Sam <- psych::alpha(Sam_items_G)
+
+colformat_double(flextable(Rel_Sam$total), digits = 2)
+```
+
+
+## Empathy
+
+### CFA
+```{r CFA Empathy, echo=F}
+Model_Inl<-'
+Inleving=~K_Inlev01+
+K_Inlev02+
+K_Inlev03+
+K_Inlev04+
+K_Inlev05+
+K_Inlev06
+'
+
+Fit_Inl_G <- cfa(model = Model_Inl, data = Goleweb_KYSS, estimator="MLM")
+sem_fitmeasures(Fit_Inl_G)
+```
+
+### Measurement invariance across Gender
+```{r MI empathy gender, echo = F, warning = FALSE}
+measurementInvariance(model = Model_Inl, data=Goleweb_KYSS, group="Gender", estimator="MLM")
+
+```
+
+### Measurement invariance across Institutions
+```{r MI empathy institutions, echo = F, warning = FALSE}
+measurementInvariance(model = Model_Inl, data=Goleweb_KYSS, group="Institution", estimator="MLM")
+
+```
+
+### Reliability
+```{r reliability empathy, echo = F}
+Inl_items_G <- dplyr::select(Goleweb_KYSS, K_Inlev01, K_Inlev02, K_Inlev03, K_Inlev04, K_Inlev05, K_Inlev06)
+Rel_Inl <- psych::alpha(Inl_items_G)
+
+colformat_double(flextable(Rel_Inl$total), digits = 2)
+```
+
+
+## Result oriented working
+
+### CFA
+```{r CFA Result oriented working, echo=F}
+Model_Res<-'
+Resultaatgerichtheid=~K_Result01+
+K_Result02+
+K_Result03+
+K_Result04+
+K_Result05+
+K_Result06+
+K_Result07
+'
+
+Fit_Res_G <- cfa(model = Model_Res, data = Goleweb_KYSS, estimator="MLM")
+sem_fitmeasures(Fit_Res_G)
+```
+
+### Measurement invariance across Gender
+```{r MI result gender, echo = F, warning = FALSE}
+measurementInvariance(model = Model_Res, data=Goleweb_KYSS, group="Gender", estimator="MLM")
+
+```
+
+### Measurement invariance across Institutions
+```{r MI result institutions, echo = F, warning = FALSE}
+measurementInvariance(model = Model_Res, data=Goleweb_KYSS, group="Institution", estimator="MLM")
+
+```
+
+### Reliability
+```{r reliability result oriented, echo = F}
+Res_items_G <- dplyr::select(Goleweb_KYSS, K_Result01, K_Result02, K_Result03, K_Result04, K_Result05, K_Result06, K_Result07)
+Rel_Res <- psych::alpha(Res_items_G)
+
+colformat_double(flextable(Rel_Res$total), digits = 2)
+```
+
+
+## Digital Skills
+
+### CFA
+```{r CFA Digital skills, echo=F}
+Model_Dig<-'
+Digitale=~K_DigVa01+
+K_DigVa02+
+K_DigVa03+
+K_DigVa04
+'
+
+Fit_Dig_G <- cfa(model = Model_Dig, data = Goleweb_KYSS, estimator="MLM")
+sem_fitmeasures(Fit_Dig_G)
+```
+
+### Measurement invariance across Gender
+```{r MI digital gender, echo = F, warning = FALSE}
+measurementInvariance(model = Model_Dig, data=Goleweb_KYSS, group="Gender", estimator="MLM")
+
+```
+
+### Measurement invariance across Institutions
+```{r MI digital institutions, echo = F, warning = FALSE}
+measurementInvariance(model = Model_Dig, data=Goleweb_KYSS, group="Institution", estimator="MLM")
+
+```
+
+### Reliability
+```{r reliability digital, echo = F}
+Digit_items_G <- dplyr::select(Goleweb_KYSS, K_DigVa01, K_DigVa02, K_DigVa03, K_DigVa04)
+Rel_Digit <- psych::alpha(Digit_items_G)
+
+colformat_double(flextable(Rel_Digit$total), digits = 2)
+```
+
+
+## Flexibility
+
+### CFA
+```{r CFA Flexibility, echo=F}
+Model_Fle<-'
+Flexibiliteit=~K_Flex01+
+K_Flex02+
+K_Flex03+
+K_Flex04+
+K_Flex05+
+K_Flex06
+'
+Fit_Fle_G <- cfa(model = Model_Fle, data = Goleweb_KYSS, estimator="MLM")
+
+sem_fitmeasures(Fit_Fle_G)
+```
+
+### Measurement invariance across Gender
+```{r MI flexibility gender, echo = F, warning = FALSE}
+measurementInvariance(model = Model_Fle, data=Goleweb_KYSS, group="Gender", estimator="MLM")
+
+```
+
+### Measurement invariance across Institutions
+```{r MI flexibility institutions, echo = F, warning = FALSE}
+measurementInvariance(model = Model_Fle, data=Goleweb_KYSS, group="Institution", estimator="MLM")
+
+```
+
+### Reliability
+```{r reliability Flexibility, echo = F}
+Fle_items_G <- dplyr::select(Goleweb_KYSS, K_Flex01, K_Flex02, K_Flex03,  K_Flex04,  K_Flex05, K_Flex06)
+rel_Fle <- psych::alpha(Fle_items_G)
+
+colformat_double(flextable(rel_Fle$total), digits = 2)
+```
+
+
+## Customer orientation
+
+### CFA
+```{r CFA Customer orientation, echo=F}
+Model_Kla<-'
+Klantgerichtheid=~K_Klant01+
+K_Klant02+
+K_Klant03+
+K_Klant04+
+K_Klant05+
+K_Klant06
+'
+
+Fit_Kla_G <- cfa(model = Model_Kla, data = Goleweb_KYSS, estimator="MLM")
+sem_fitmeasures(Fit_Kla_G)
+```
+
+### Measurement invariance across Gender
+```{r MI customer gender, echo = F, warning = FALSE}
+measurementInvariance(model = Model_Kla, data=Goleweb_KYSS, group="Gender", estimator="MLM")
+
+```
+
+### Measurement invariance across Institutions
+```{r MI customer institutions, echo = F, warning = FALSE}
+measurementInvariance(model = Model_Kla, data=Goleweb_KYSS, group="Institution", estimator="MLM")
+
+```
+
+### Reliability
+```{r reliability customer, echo = F}
+Klant_items_G <- dplyr::select(Goleweb_KYSS, K_Klant01, K_Klant02, K_Klant03, K_Klant04, K_Klant05, K_Klant06)
+Rel_Klant <- psych::alpha(Klant_items_G)
+
+colformat_double(flextable(Rel_Klant$total), digits = 2)
+```
+
+
+## Analysing
+
+### CFA
+```{r CFA Analysing, echo=F}
+Model_Ana<-'
+Analyseren=~K_Anal01+
+K_Anal02+
+K_Anal03+
+K_Anal04+
+K_Anal05
+'
+
+Fit_Ana_G <- cfa(model = Model_Ana, data = Goleweb_KYSS, estimator="MLM")
+sem_fitmeasures(Fit_Ana_G)
+```
+
+### Measurement invariance across Gender
+```{r MI analysing gender, echo = F, warning = FALSE}
+measurementInvariance(model = Model_Ana, data=Goleweb_KYSS, group="Gender", estimator="MLM")
+
+```
+
+### Measurement invariance across Institutions
+```{r MI analysing institutions, echo = F, warning = FALSE}
+measurementInvariance(model = Model_Ana, data=Goleweb_KYSS, group="Institution", estimator="MLM")
+
+```
+
+### Reliability
+```{r reliability analysing, echo = F}
+Anal_items_G <- dplyr::select(Goleweb_KYSS, K_Anal01, K_Anal02, K_Anal03, K_Anal04, K_Anal05)
+Rel_Anal <- psych::alpha(Anal_items_G)
+
+colformat_double(flextable(Rel_Anal$total), digits = 2)
+```
+
+
+## Creativity
+
+### CFA
+
+```{r CFA Creativity, echo=F}
+Model_Cre<-'
+Creativiteit=~K_Crea01+
+K_Crea02+
+K_Crea03+
+K_Crea04+
+K_Crea05+
+K_Crea06'
+
+Fit_Cre_G <- cfa(model = Model_Cre, data = Goleweb_KYSS, estimator="MLM")
+# summary(Fit_Cre_G, fit.measures = TRUE, standardized=TRUE) 
+
+sem_fitmeasures(Fit_Cre_G)
+
+```
+
+### Measurement invariance across Gender
+```{r MI creativity gender, echo = F, warning = FALSE}
+MI_creativiteit<-measurementInvariance(model = Model_Cre, data=Goleweb_KYSS, group="Gender", estimator="MLM")
+
+```
+
+### Measurement invariance across Institutions
+```{r MI creativity institutions, echo = F, warning = FALSE}
+measurementInvariance(model = Model_Cre, data=Goleweb_KYSS, group="Institution", estimator="MLM")
+
+```
+
+### Reliability
+
+```{r reliability creativity, echo = F}
+Cre_items_G <- dplyr::select(Goleweb_KYSS, K_Crea01,K_Crea02, K_Crea03, K_Crea04, K_Crea05, K_Crea06)
+rel_Cre <- psych::alpha(Cre_items_G)
+
+colformat_double(flextable(rel_Cre$total), digits = 2)
+  
+```
+
+
+## Critical Thinking
+
+### CFA
+```{r CFA Critical Thinking, echo=F}
+Model_Kri<-'
+Kritischdenken=~K_Kriti01+
+K_Kriti02+
+K_Kriti03+
+K_Kriti04+
+K_Kriti05
+'
+Fit_Kri_G <- cfa(model = Model_Kri, data = Goleweb_KYSS, estimator="MLM")
+sem_fitmeasures(Fit_Kri_G)
+```
+
+### Measurement invariance across Gender
+```{r MI critical gender, echo = F, warning = FALSE}
+measurementInvariance(model = Model_Kri, data=Goleweb_KYSS, group="Gender", estimator="MLM")
+
+```
+
+### Measurement invariance across Institutions
+```{r MI critical institutions, echo = F, warning = FALSE}
+measurementInvariance(model = Model_Kri, data=Goleweb_KYSS, group="Institution", estimator="MLM")
+
+```
+
+### Reliability
+```{r reliability critical, echo = F}
+Kriti_items_G <- dplyr::select(Goleweb_KYSS, K_Kriti01, K_Kriti02, K_Kriti03, K_Kriti04, K_Kriti05)
+Rel_Kriti <- psych::alpha(Kriti_items_G)
+
+colformat_double(flextable(Rel_Kriti$total), digits = 2)
+```
+
+
+## Willingness to learn
+
+### CFA
+```{r CFA Willingness to learn, echo=F}
+Model_Leer<-'
+Leerbereidheid=~K_Leer01+
+K_Leer02+
+K_Leer03+
+K_Leer04+
+K_Leer05+
+K_Leer06
+'
+Fit_Leer_G <- cfa(model = Model_Leer, data = Goleweb_KYSS, estimator="MLM")
+sem_fitmeasures(Fit_Leer_G)
+```
+
+### Measurement invariance across Gender
+```{r MI Learning gender, echo = F, warning = FALSE}
+measurementInvariance(model = Model_Leer, data=Goleweb_KYSS, group="Gender", estimator="MLM")
+
+```
+
+### Measurement invariance across Institutions
+```{r MI Learning institutions, echo = F, warning = FALSE}
+measurementInvariance(model = Model_Leer, data=Goleweb_KYSS, group="Institution", estimator="MLM")
+
+```
+
+### Reliability
+```{r reliability learning}
+Leer_items_G <- dplyr::select(Goleweb_KYSS, K_Leer01, K_Leer02, K_Leer03, K_Leer04, K_Leer05, K_Leer06)
+Rel_Leer <- psych::alpha(Leer_items_G)
+
+colformat_double(flextable(Rel_Leer$total), digits = 2)
+```
+
+
+## Self-reflection
+
+### CFA
+```{r CFA Self-reflection, echo=F}
+    Model_Ref_G<-'
+Zelfreflectie=~K_Refl01+
+K_Refl02+
+K_Refl03+
+K_Refl04+
+K_Refl05+
+K_Relf06'
+
+Fit_Ref_G <- cfa(model = Model_Ref_G, data = Goleweb_KYSS, estimator="MLM")
+sem_fitmeasures(Fit_Ref_G)
+```
+Fit measures demonstrate inadequate model fit. Modification indices pointed out that allowing covariance between items K_Refl03 and K_Refl04 would improve model fit.
+
+```{r CFA reflection 2, echo=F}
+Model_Ref_G2<-'
+Zelfreflectie=~K_Refl01+
+K_Refl02+
+K_Refl03+
+K_Refl04+
+K_Refl05+
+K_Relf06
+K_Refl03~~K_Refl04'
+
+Fit_Ref_G2 <- cfa(model = Model_Ref_G2, data = Goleweb_KYSS, estimator="MLM")
+sem_fitmeasures(Fit_Ref_G2)
+
+```
+Fit measures demonstrate that allowing covariance resulted in adequate model-fit. Analyses also pointed that the second model is significantly better than the first.
+
+```{r CFA Reflection 3, echo=F}
+
+compare_Ref <- anova (Fit_Ref_G, Fit_Ref_G2)
+
+flextable(compare_Ref)
+
+```
+
+### Measurement invariance across Gender
+```{r MI Reflection gender, echo = F, warning = FALSE}
+measurementInvariance(model = Model_Ref_G2, data=Goleweb_KYSS, group="Gender", estimator="MLM")
+
+```
+
+### Measurement invariance across Institutions
+```{r MI Reflection institutions, echo = F, warning = FALSE}
+measurementInvariance(model = Model_Ref_G2, data=Goleweb_KYSS, group="Institution", estimator="MLM")
+
+```
+
+### Reliability
+```{r Reflection, echo = F}
+Ref_items_G <- dplyr::select(Goleweb_KYSS, K_Refl01, K_Refl02, K_Refl03, K_Refl04, K_Refl05, K_Relf06)
+Rel_Ref <- psych::alpha(Ref_items_G)
+
+colformat_double(flextable(Rel_Ref$total), digits = 2)
+```
+
+
+## Planning & Organising
+
+### CFA
+```{r CFA Planning & organising, echo=F}
+Model_Pla<-'
+Plannen=~K_Plan01+
+K_Plan02+
+K_Plan03+
+K_Plan04+
+K_Plan05+
+K_Plan06+
+K_Plan07
+'
+
+Fit_Pla_G <- cfa(model = Model_Pla, data = Goleweb_KYSS, estimator="MLM")
+
+sem_fitmeasures(Fit_Pla_G)
+```
+
+### Measurement invariance across Gender
+```{r MI planning gender, echo = F, warning = FALSE}
+measurementInvariance(model = Model_Pla, data=Goleweb_KYSS, group="Gender", estimator="MLM")
+
+```
+
+### Measurement invariance across Institutions
+```{r MI planning institutions, echo = F, warning = FALSE}
+measurementInvariance(model = Model_Pla, data = Goleweb_KYSS, group="Institution", estimator="MLM")
+
+```
+
+### Reliability
+```{r reliability Planning, echo = F}
+
+Pla_items_G <- dplyr::select(Goleweb_KYSS, K_Plan01, K_Plan02, K_Plan03, K_Plan04, K_Plan05, K_Plan06, K_Plan07)
+Rel_Pla <- psych::alpha(Pla_items_G)
+
+colformat_double(flextable(Rel_Pla$total), digits = 2)
+
+```
+
+
+## Responsibility
+
+### CFA
+```{r CFA Responsibility, echo=F}
+Model_Ver<-'
+Verantwoordelijkheid=~K_Vera01+
+K_Vera02+
+K_Vera03+
+K_Vera04
+'
+
+Fit_Ver_G <- cfa(model = Model_Ver, data = Goleweb_KYSS, estimator="MLM")
+sem_fitmeasures(Fit_Ver_G)
+```
+
+### Measurement invariance across Gender
+```{r MI responsibility gender, echo = F, warning = FALSE}
+measurementInvariance(model = Model_Ver, data=Goleweb_KYSS, group="Gender", estimator="MLM")
+
+```
+
+### Measurement invariance across Institutions
+```{r MI responsibility institutions, echo = F, warning = FALSE}
+measurementInvariance(model = Model_Ver, data=Goleweb_KYSS, group="Institution", estimator="MLM")
+
+```
+
+### Reliability
+```{r reliability responsibility, echo = F}
+Vera_items_G <- dplyr::select(Goleweb_KYSS, K_Vera01, K_Vera02, K_Vera03, K_Vera04)
+Rel_Vera <- psych::alpha(Vera_items_G)
+
+colformat_double(flextable(Rel_Vera$total), digits = 2)
+```
+
+
+## Independence
+
+### CFA
+```{r CFA Self-reliance, echo=F}
+Model_Zelf<-'
+Zelfstandigheid=~K_Zelf01+
+K_Zelf02+
+K_Zelf03+
+K_Zelf04+
+K_Zelf05+
+K_Zelf06
+'
+
+Fit_Zelf_G <- cfa(model = Model_Zelf, data = Goleweb_KYSS, estimator="MLM")
+sem_fitmeasures(Fit_Zelf_G)
+```
+
+Fit measures demonstrate inadequate model fit. Modification indices pointed out that allowing covariance between items K_Zelf02 and K_Zelf04 would improve model fit.
+
+```{r CFA Self-reliance 2, echo=F}
+Model_Zelf_2<-'
+Zelfstandigheid=~K_Zelf01+
+K_Zelf02+
+K_Zelf03+
+K_Zelf04+
+K_Zelf05+
+K_Zelf06
+K_Zelf02~~K_Zelf04'
+ Fit_Zelf_G2 <- cfa(model = Model_Zelf_2, data = Goleweb_KYSS, estimator="MLM")
+sem_fitmeasures(Fit_Zelf_G2)
+
+```
+
+### Measurement invariance across Gender
+```{r MI reliance gender, echo = F, warning = FALSE}
+measurementInvariance(model = Model_Zelf_2, data=Goleweb_KYSS, group="Gender", estimator="MLM")
+
+```
+
+### Measurement invariance across Institutions
+```{r MI reliance institutions, echo = F, warning = FALSE}
+measurementInvariance(model = Model_Zelf_2, data=Goleweb_KYSS, group="Institution", estimator="MLM")
+
+```
+
+### Reliability
+```{r reliability self-reliance, echo = F}
+Zelf_items_G <- dplyr::select(Goleweb_KYSS, K_Zelf01, K_Zelf02, K_Zelf03, K_Zelf04, K_Zelf05, K_Zelf06)
+Rel_Zelf <- psych::alpha(Zelf_items_G)
+
+colformat_double(flextable(Rel_Zelf$total), digits = 2)
+```
+
+
+## Conclusions Psychometric Analyses
+
+
+
+# Results Substantive Analyses
+
+## Descriptive Analyses
+
+For readability purposes descriptive results were organised according to the 4 components in the KYSS-model
+
+
+### Interactive component
+```{r interactive scales, echo = F, message=FALSE, warning = FALSE}
+Gemiddelde_Goleweb_interactief<- Goleweb_schalen_clean%>%
+ summarise( Diversity= round(mean(Diversiteit, na.rm = TRUE),2),
+            Cooperation = round(mean(Samenwerken, na.rm = TRUE),2),
+            Communication = round(mean(Communicatie, na.rm = TRUE),2),
+            Empathy = round(mean(Inlevingsvermogen, na.rm = TRUE),2))
+
+
+Mediaan_Goleweb_interactief<- Goleweb_schalen_clean%>%
+ summarise( Diversity= round(median(Diversiteit, na.rm = TRUE),2),
+            Cooperation = round(median(Samenwerken, na.rm = TRUE),2),
+            Communication = round(median(Communicatie, na.rm = TRUE),2),
+            Empathy = round(median(Inlevingsvermogen, na.rm = TRUE),2))
+
+sd_Goleweb_interactief<- Goleweb_schalen_clean%>%
+ summarise( Diversity= round(sd(Diversiteit, na.rm = TRUE),2),
+            Cooperation = round(sd(Samenwerken, na.rm = TRUE),2),
+            Communication = round(sd(Communicatie, na.rm = TRUE),2),
+            Empathy = round(sd(Inlevingsvermogen, na.rm = TRUE),2))
+
+Skewness_Goleweb_interactief<- Goleweb_schalen_clean%>%
+ summarise( Diversity= round(skewness(Diversiteit, na.rm = TRUE),2),
+            Cooperation = round(skewness(Samenwerken, na.rm = TRUE),2),
+            Communication = round(skewness(Communicatie, na.rm = TRUE),2),
+            Empathy = round(skewness(Inlevingsvermogen, na.rm = TRUE),2))
+
+Kurtosis_Goleweb_interactief<- Goleweb_schalen_clean%>%
+ summarise( Diversity= round(kurtosis(Diversiteit, na.rm = TRUE),2),
+            Cooperation = round(kurtosis(Samenwerken, na.rm = TRUE),2),
+            Communication = round(kurtosis(Communicatie, na.rm = TRUE),2),
+            Empathy = round(kurtosis(Inlevingsvermogen, na.rm = TRUE),2))
+
+Maten <-  c("Mean", "Median", "Standard Deviation", "Skewness", "Kurtosis")
+descriptives_KYSS_interactive <- bind_rows(Gemiddelde_Goleweb_interactief, Mediaan_Goleweb_interactief, sd_Goleweb_interactief, Skewness_Goleweb_interactief, Kurtosis_Goleweb_interactief)
+
+Table_interactive <- bind_cols(Maten, descriptives_KYSS_interactive)
+Table_interactive <- flextable(Table_interactive)
+Table_interactive <-set_caption(Table_interactive, caption = "Table 4: Descriptives Scales belonging to interactive component in KYSS model")
+autofit(Table_interactive)
+
+```
+### Problem Solving component
+
+```{r problem solving, echo = F, message=FALSE, warning = FALSE}
+Gemiddelde_Goleweb_problem <- Goleweb_schalen_clean%>%
+ summarise( Result_oriented= round(mean(Resultaatsgerichtheid, na.rm = TRUE),2),
+            Digital_skills = round(mean(Digitale_vaardigheden, na.rm = TRUE),2),
+            Flexibility = round(mean(Flexibiliteit, na.rm = TRUE),2),
+            Customer_oriented = round(mean(Klantgerichtheid, na.rm = TRUE),2))
+
+
+Mediaan_Goleweb_problem<- Goleweb_schalen_clean%>%
+ summarise( Result_oriented= round(median(Resultaatsgerichtheid, na.rm = TRUE),2),
+            Digital_skills = round(median(Digitale_vaardigheden, na.rm = TRUE),2),
+            Flexibility = round(median(Flexibiliteit, na.rm = TRUE),2),
+            Customer_oriented = round(median(Klantgerichtheid, na.rm = TRUE),2))
+
+
+sd_Goleweb_problem<- Goleweb_schalen_clean%>%
+ summarise( Result_oriented= round(sd(Resultaatsgerichtheid, na.rm = TRUE),2),
+            Digital_skills = round(sd(Digitale_vaardigheden, na.rm = TRUE),2),
+            Flexibility = round(sd(Flexibiliteit, na.rm = TRUE),2),
+            Customer_oriented = round(sd(Klantgerichtheid, na.rm = TRUE),2))
+
+
+Skewness_Goleweb_problem<- Goleweb_schalen_clean%>%
+ summarise( Result_oriented= round(skewness(Resultaatsgerichtheid, na.rm = TRUE),2),
+            Digital_skills = round(skewness(Digitale_vaardigheden, na.rm = TRUE),2),
+            Flexibility = round(skewness(Flexibiliteit, na.rm = TRUE),2),
+            Customer_oriented = round(skewness(Klantgerichtheid, na.rm = TRUE),2))
+
+Kurtosis_Goleweb_problem<- Goleweb_schalen_clean%>%
+ summarise( Result_oriented= round(kurtosis(Resultaatsgerichtheid, na.rm = TRUE),2),
+            Digital_skills = round(kurtosis(Digitale_vaardigheden, na.rm = TRUE),2),
+            Flexibility = round(kurtosis(Flexibiliteit, na.rm = TRUE),2),
+            Customer_oriented = round(kurtosis(Klantgerichtheid, na.rm = TRUE),2))
+
+
+
+descriptives_KYSS_problem <- bind_rows(Gemiddelde_Goleweb_problem, Mediaan_Goleweb_problem, sd_Goleweb_problem, Skewness_Goleweb_problem, Kurtosis_Goleweb_problem)
+
+Table_problem <- bind_cols(Maten, descriptives_KYSS_problem)
+Table_problem <- flextable(Table_problem)
+Table_problem <-set_caption(Table_problem, caption = "Table 5: Descriptives Scales belonging to problem solving component in KYSS model")
+autofit(Table_problem)
+
+```
+
+### Information processing
+
+```{r information processing, echo = F, , message=FALSE, warning = FALSE}
+Gemiddelde_Goleweb_information <- Goleweb_schalen_clean%>%
+ summarise( Analysing= round(mean(Analyseren, na.rm = TRUE),2),
+            Critical_thinking = round(mean(Kritisch_denken, na.rm = TRUE),2),
+            Creativity = round(mean(Creativiteit, na.rm = TRUE),2),
+            Willingness_to_learn = round(mean(Leerbereidheid, na.rm = TRUE),2))
+
+
+Mediaan_Goleweb_information<- Goleweb_schalen_clean%>%
+ summarise( Analysing= round(median(Analyseren, na.rm = TRUE),2),
+            Critical_thinking = round(median(Kritisch_denken, na.rm = TRUE),2),
+            Creativity = round(median(Creativiteit, na.rm = TRUE),2),
+            Willingness_to_learn = round(median(Leerbereidheid, na.rm = TRUE),2))
+
+
+sd_Goleweb_information<- Goleweb_schalen_clean%>%
+ summarise( Analysing= round(sd(Analyseren, na.rm = TRUE),2),
+            Critical_thinking = round(sd(Kritisch_denken, na.rm = TRUE),2),
+            Creativity = round(sd(Creativiteit, na.rm = TRUE),2),
+            Willingness_to_learn = round(sd(Leerbereidheid, na.rm = TRUE),2))
+
+
+
+Skewness_Goleweb_information<- Goleweb_schalen_clean%>%
+ summarise( Analysing= round(skewness(Analyseren, na.rm = TRUE),2),
+            Critical_thinking = round(skewness(Kritisch_denken, na.rm = TRUE),2),
+            Creativity = round(skewness(Creativiteit, na.rm = TRUE),2),
+            Willingness_to_learn = round(skewness(Leerbereidheid, na.rm = TRUE),2))
+
+
+Kurtosis_Goleweb_information<- Goleweb_schalen_clean%>%
+ summarise( Analysing= round(kurtosis(Analyseren, na.rm = TRUE),2),
+            Critical_thinking = round(kurtosis(Kritisch_denken, na.rm = TRUE),2),
+            Creativity = round(kurtosis(Creativiteit, na.rm = TRUE),2),
+            Willingness_to_learn = round(kurtosis(Leerbereidheid, na.rm = TRUE),2))
+
+
+
+
+descriptives_KYSS_information <- bind_rows(Gemiddelde_Goleweb_information, Mediaan_Goleweb_information, sd_Goleweb_information, Skewness_Goleweb_information, Kurtosis_Goleweb_information)
+
+Table_information <- bind_cols(Maten, descriptives_KYSS_information)
+Table_information <- flextable(Table_information)
+Table_information <-set_caption(Table_information, caption = "Table 6: Descriptives Scales belonging to information processing component in KYSS model")
+autofit(Table_information)
+
+```
+
+### Personal
+
+```{r personal, echo = F, message=FALSE, warning = FALSE}
+Gemiddelde_Goleweb_personal <- Goleweb_schalen_clean%>%
+ summarise( Self_reflection = round(mean(Zelfreflectie, na.rm = TRUE),2),
+            Planning_Organising = round(mean(Plannen_organisatie, na.rm = TRUE),2),
+            Responsibility = round(mean(Verantwoordelijkheid, na.rm = TRUE),2),
+            Independence = round(mean(Zelfstandigheid, na.rm = TRUE),2))
+
+Mediaan_Goleweb_personal<- Goleweb_schalen_clean%>%
+ summarise( Self_reflection = round(median(Zelfreflectie, na.rm = TRUE),2),
+            Planning_Organising = round(median(Plannen_organisatie, na.rm = TRUE),2),
+            Responsibility = round(median(Verantwoordelijkheid, na.rm = TRUE),2),
+            Independence = round(median(Zelfstandigheid, na.rm = TRUE),2))
+
+sd_Goleweb_personal<- Goleweb_schalen_clean%>%
+ summarise( Self_reflection = round(sd(Zelfreflectie, na.rm = TRUE),2),
+            Planning_Organising = round(sd(Plannen_organisatie, na.rm = TRUE),2),
+            Responsibility = round(sd(Verantwoordelijkheid, na.rm = TRUE),2),
+            Independence = round(sd(Zelfstandigheid, na.rm = TRUE),2))
+
+Skewness_Goleweb_personal<- Goleweb_schalen_clean%>%
+ summarise( Self_reflection= round(skewness(Zelfreflectie, na.rm = TRUE),2),
+            Planning_Organising = round(skewness(Plannen_organisatie, na.rm = TRUE),2),
+            Responsibility = round(skewness(Verantwoordelijkheid, na.rm = TRUE),2),
+            Independence = round(skewness(Zelfstandigheid, na.rm = TRUE),2))
+
+Kurtosis_Goleweb_personal<- Goleweb_schalen_clean%>%
+ summarise( Self_reflection= round(kurtosis(Zelfreflectie, na.rm = TRUE),2),
+            Planning_Organising = round(kurtosis(Plannen_organisatie, na.rm = TRUE),2),
+            Responsibility = round(kurtosis(Verantwoordelijkheid, na.rm = TRUE),2),
+            Independence = round(kurtosis(Zelfstandigheid, na.rm = TRUE),2))
+
+descriptives_KYSS_personal <- bind_rows(Gemiddelde_Goleweb_personal, Mediaan_Goleweb_personal, sd_Goleweb_personal, Skewness_Goleweb_personal, Kurtosis_Goleweb_personal)
+
+Table_personal <- bind_cols(Maten, descriptives_KYSS_personal)
+Table_personal <- flextable(Table_personal)
+Table_personal <-set_caption(Table_personal, caption = "Table 7: Descriptives Scales belonging to personal component in KYSS model")
+autofit(Table_personal)
+
+```
+
+### Boxplots
+```{r boxplots, echo = F,  message=FALSE, warning = FALSE}
+Goleweb_wide <-Goleweb_schalen_clean%>%
+  select(Gebruikersnaam, Creativiteit:Inlevingsvermogen)
+
+colnames(Goleweb_wide) <- c('Gebruikersnaam', 'Creativity', 'Diversity', 'Flexibility', 'Planning_organising', 'Result_oriented', 'Cooperation', 'Communication', 'Digital_skills', 'Customer_oriented', 'Self_reflection', 'Independence', 'Responsibility', 'Willingness_to_learn', 'Analysing', 'Critical_thinking', 'Empathy')
+
+
+
+Goleweb_long <- Goleweb_wide %>%
+  dplyr::select(Gebruikersnaam, Communication, Diversity, Cooperation, Empathy, Result_oriented, Digital_skills, Flexibility, Customer_oriented, Analysing, Creativity, Critical_thinking, Willingness_to_learn, Self_reflection, Planning_organising, Responsibility, Independence) %>%
+  pivot_longer(-Gebruikersnaam, names_to = "Schaal", values_to = "Waarde")
+
+ggplot (data = Goleweb_long, mapping = aes(x = Schaal, y = Waarde, fill = Schaal)) +
+  geom_boxplot(show.legend = F) +
+  stat_summary(fun=mean, geom="point", color="red", size=2, show.legend = F) +
+  labs(title="Boxplots beschrijvende statistieken KYSS-schalen",
+        x ="KYSS-Schalen", y = "scores (1-5)")+
+  scale_x_discrete(limits=c("Communication", "Diversity", "Cooperation", "Empathy", "Result_oriented", "Digital_skills", "Flexibility", "Customer_oriented", "Analysing", "Creativity", "Critical_thinking", "Willingness_to_learn", "Self_reflection", "Planning_organising", "Responsibility", "Independence")) +
+  scale_fill_grey(start = 0.3, end = 0.9) +
+  coord_flip()
+
+```
+
+
+## Correlations
+```{r correlations, echo = F, message=FALSE, warning = FALSE, fig.width=10,fig.height=11}
+Cor_KYSS_Goleweb <- Goleweb_wide %>%
+  dplyr::select(Communication, Diversity, Cooperation, Empathy, Result_oriented, Digital_skills, Flexibility, Customer_oriented, Analysing, Creativity, Critical_thinking, Willingness_to_learn, Self_reflection, Planning_organising, Responsibility, Independence) %>%
+  dplyr::filter(!is.na(Communication)) %>%
+  dplyr::filter(!is.na(Diversity)) %>%
+  dplyr::filter(!is.na(Cooperation)) %>%
+  dplyr::filter(!is.na(Empathy)) %>%
+  dplyr::filter(!is.na(Result_oriented)) %>%
+  dplyr::filter(!is.na(Digital_skills)) %>%
+  dplyr::filter(!is.na(Flexibility)) %>%
+  dplyr::filter(!is.na(Customer_oriented)) %>%
+  dplyr::filter(!is.na(Analysing)) %>%
+  dplyr::filter(!is.na(Creativity)) %>%
+  dplyr::filter(!is.na(Critical_thinking)) %>%
+  dplyr::filter(!is.na(Willingness_to_learn)) %>%
+  dplyr::filter(!is.na(Self_reflection)) %>%
+  dplyr::filter(!is.na(Planning_organising)) %>%
+  dplyr::filter(!is.na(Responsibility)) %>%
+  dplyr::filter(!is.na(Independence))
+
+Matrix_KYSS_Goleweb<- cor(Cor_KYSS_Goleweb)
+
+ggcorrplot(Matrix_KYSS_Goleweb, method = "square", type = "upper", colors=c( "#FF9F23", "White", "#2683C6"), lab=TRUE, lab_col = "grey25", legend.title = " Sterkte correlatie", title = "Samenhang KYSS Schalen in GOLEWEB")
+
+
+```
+
+
+## Predictive analyses using Gender as predictor
+
+```{r ANOVA gender, Echo = F, echo = F, message=FALSE, warning = FALSE }
+ Goleweb_schalen_gender <- Goleweb_schalen_clean %>%
+ dplyr::select(Gender, Creativiteit:Inlevingsvermogen) 
+
+
+colnames(Goleweb_schalen_gender) <- c('Gender', 'Creativity', 'Diversity', 'Flexibility', 'Planning_organising', 'Result_oriented', 'Cooperation', 'Communication', 'Digital_skills', 'Customer_oriented', 'Self_reflection', 'Independence', 'Responsibility', 'Willingness_to_learn', 'Analysing', 'Critical_thinking', 'Empathy')
+
+
+
+anova_gender  <- Goleweb_schalen_gender %>%
+    tbl_summary(
+    by = Gender,
+    statistic = list(all_continuous() ~ "{mean} ({sd})"),
+    missing = 'no') %>%
+    add_p (test = everything() ~ "aov")
+  
+table_anova_gender <- as_flex_table(anova_gender)
+table_anova_gender <-set_caption(table_anova_gender, caption = "Table 6.1: ANOVA analyses with gender as predictor and scales in KYSS survey as dependent")
+autofit(table_anova_gender)
+
+```
+Several significant results are observed. However, problems with measurement invariance prohibit interpreting significant results for *Digital skills*, *Customer Orientation* and *Willingness to Learn*. They also caution interpreting results for *Self-Reflection* and *Responsibility*. Based on the results of the  measurement invariance analyses for *Diversity*, *Empathy*, *Analysing*, *Creativity*, *Planning and Organising* and *Independence*, means can be compared across gender for these scales. To help interpret the importance of these effects, effect sizes are provided for the latter scales in *Tables 6.2* to *6.9*.
+
+Results demonstrate small effects for *Diversity*, *Empathy*, *Planning and Organising* and *Responsibility*. For each scale between 2 and 3 percent of differences in scores can be attributed to gender. In each instance females exhibit a significantly larger score compared to males. 
+
+
+```{r ANOVA diversity gender, echo = F,  message=FALSE, warning = FALSE}
+anova_diversity_gender <- aov(formula = Diversity ~ factor(Gender), 
+                        data = Goleweb_schalen_gender)
+
+effect_diversity_gender <- effectsize(anova_diversity_gender)
+effect_diversity_gender$Eta2 <- round(effect_diversity_gender$Eta2, 3)
+effect_diversity_gender$CI_low <- round(effect_diversity_gender$CI_low, 3)
+effect_diversity_gender$CI_high <- round(effect_diversity_gender$CI_high, 3)
+
+
+set_caption(flextable(effect_diversity_gender), caption = "Table 6.2: Eta squared measurement for effect size for the scale **Diversity**")
+
+```
+
+
+```{r ANOVA empathy gender, echo = F,  message=FALSE, warning = FALSE}
+anova_empathy_gender <- aov(formula = Empathy ~ factor(Gender), 
+                        data = Goleweb_schalen_gender)
+
+effect_empathy_gender <- effectsize(anova_empathy_gender)
+effect_empathy_gender$Eta2 <- round(effect_empathy_gender$Eta2, 3)
+effect_empathy_gender$CI_low <- round(effect_empathy_gender$CI_low, 3)
+effect_empathy_gender$CI_high <- round(effect_empathy_gender$CI_high, 3)
+
+set_caption(flextable(effect_empathy_gender), caption = "Table 6.3: Eta squared measurement for effect size for the scale **Empathy**")
+
+```
+
+
+
+```{r ANOVA analysing gender, echo = F,  message=FALSE, warning = FALSE}
+anova_analysing_gender <- aov(formula = Analysing ~ factor(Gender), 
+                        data = Goleweb_schalen_gender)
+
+effect_analysing_gender <- effectsize(anova_analysing_gender)
+effect_analysing_gender$Eta2 <- round(effect_analysing_gender$Eta2, 3)
+effect_analysing_gender$CI_low <- round(effect_analysing_gender$CI_low, 3)
+effect_analysing_gender$CI_high <- round(effect_analysing_gender$CI_high, 3)
+
+set_caption(flextable(effect_analysing_gender), caption = "Table 6.4: Eta squared measurement for effect size for the scale **Analysing**")
+
+```
+
+```{r ANOVA Creativity gender, echo = F,  message=FALSE, warning = FALSE}
+anova_Creativity_gender <- aov(formula = Creativity ~ factor(Gender), 
+                        data = Goleweb_schalen_gender)
+
+effect_Creativity_gender <- effectsize(anova_Creativity_gender)
+effect_Creativity_gender$Eta2 <- round(effect_Creativity_gender$Eta2, 3)
+effect_Creativity_gender$CI_low <- round(effect_Creativity_gender$CI_low, 3)
+effect_Creativity_gender$CI_high <- round(effect_Creativity_gender$CI_high, 3)
+
+set_caption(flextable(effect_Creativity_gender), caption = "Table 6.5: Eta squared measurement for effect size for the scale **Creativity**")
+
+```
+
+
+```{r ANOVA Self_reflection gender, echo = F,  message=FALSE, warning = FALSE}
+anova_Self_reflection_gender <- aov(formula = Self_reflection ~ factor(Gender), 
+                        data = Goleweb_schalen_gender)
+
+effect_Self_reflection_gender <- effectsize(anova_Self_reflection_gender)
+effect_Self_reflection_gender$Eta2 <- round(effect_Self_reflection_gender$Eta2, 3)
+effect_Self_reflection_gender$CI_low <- round(effect_Self_reflection_gender$CI_low, 3)
+effect_Self_reflection_gender$CI_high <- round(effect_Self_reflection_gender$CI_high, 3)
+
+set_caption(flextable(effect_Self_reflection_gender), caption = "Table 6.6: Eta squared measurement for effect size for the scale **Self Reflection**")
+
+```
+
+
+
+```{r ANOVA Planning_organising gender, echo = F,  message=FALSE, warning = FALSE}
+anova_Planning_organising_gender <- aov(formula = Planning_organising ~ factor(Gender), 
+                        data = Goleweb_schalen_gender)
+
+effect_Planning_organising_gender <- effectsize(anova_Planning_organising_gender)
+effect_Planning_organising_gender$Eta2 <- round(effect_Planning_organising_gender$Eta2, 3)
+effect_Planning_organising_gender$CI_low <- round(effect_Planning_organising_gender$CI_low, 3)
+effect_Planning_organising_gender$CI_high <- round(effect_Planning_organising_gender$CI_high, 3)
+
+set_caption(flextable(effect_Planning_organising_gender), caption = "Table 6.7: Eta squared measurement for effect size for the scale **Planning and organising**")
+
+```
+
+
+```{r ANOVA Responsibility gender, echo = F,  message=FALSE, warning = FALSE}
+anova_Responsibility_gender <- aov(formula = Responsibility ~ factor(Gender), 
+                        data = Goleweb_schalen_gender)
+
+effect_Responsibility_gender <- effectsize(anova_Responsibility_gender)
+effect_Responsibility_gender$Eta2 <- round(effect_Responsibility_gender$Eta2, 3)
+effect_Responsibility_gender$CI_low <- round(effect_Responsibility_gender$CI_low, 3)
+effect_Responsibility_gender$CI_high <- round(effect_Responsibility_gender$CI_high, 3)
+
+set_caption(flextable(effect_Responsibility_gender), caption = "Table 6.8: Eta squared measurement for effect size for the scale **Responsibility**")
+
+```
+
+
+```{r ANOVA Independence gender, echo = F,  message=FALSE, warning = FALSE}
+anova_Independence_gender <- aov(formula = Independence ~ factor(Gender), 
+                        data = Goleweb_schalen_gender)
+
+effect_Independence_gender <- effectsize(anova_Independence_gender)
+effect_Independence_gender$Eta2 <- round(effect_Independence_gender$Eta2, 3)
+effect_Independence_gender$CI_low <- round(effect_Independence_gender$CI_low, 3)
+effect_Independence_gender$CI_high <- round(effect_Independence_gender$CI_high, 3)
+
+set_caption(flextable(effect_Independence_gender), caption = "Table 6.9: Eta squared measurement for effect size for the scale **Independence**")
+
+
+## Predictive analyses using Institution as predictor
+
+
+# General conclusions
+
+# Literature

@@ -1,0 +1,17 @@
+# Research questions
+
+The following research questions are answered in the current report:
+
+**Psychometric questions:** (Chapter 5)
+
++ **RQ1:** Do scales in the KYSS-questionnaire have sufficient construct validity?
++ **RQ2:** Is the factor structure of the scales in the KYSS-questionnaire invariant across gender?
++ **RQ3:** Is the factor structure of the scales in the KYSS-questionnaire invariant across Higher education institution?
++ **RQ4:** Are the scales in the KYSS-questionnaire sufficiently reliable?
+
+**Substantive questions:** (Chapter 6)
+
++ **RQ5:** What are descriptive statistics for the scales in the KYSS-questionnaire?
++ **RQ6:** How are the scales in the KYSS-questionnaire correlated?
++ **RQ7:** Does gender predict scores on the scales in the KYSS-questionnaire?
++ **RQ8:** Does Higher education institution predict scores on the scales in the KYSS-questionnaire?

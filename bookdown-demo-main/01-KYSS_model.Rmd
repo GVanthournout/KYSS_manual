@@ -1,0 +1,14 @@
+# The KYSS-model
+
+The theoretical framework on soft skills was developed during the KYSS-project [7]. In this project a literature review inventoried soft skills incorporated in existing soft skill-models. Subsequently, the top 25 of most frequently mentioned soft skills were prioritised by stakeholders in both the institute for higher education and the labour market. This resulted in a model of 16 soft skills organised in four overarching domains. These soft skills were deemed relevant for higher education and the workplace. *Figure 1* provides a schematic overview of the structure of the model, while *Table 1* contains a short description of the incorporated soft skills.
+
+![**Figure 1:** The KYSS model ](https://www.ap.be/sites/default/files/styles/extra_large/public/2021-06/kyss-model.png?itok=rbUq0vzX)
+
+```{r KYSS schalen, echo = F}
+KYSS_Scales <- read_excel("D:/Gert/Documents/kyss/KYSS_Scales.xlsx")
+
+Tabel_KYSS_scales <- flextable(KYSS_Scales)
+Tabel_KYSS_scales <-set_caption(Tabel_KYSS_scales, caption = "Table 1: overview KYSS-scales")
+autofit(Tabel_KYSS_scales)
+
+```

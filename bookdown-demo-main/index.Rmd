@@ -1,0 +1,105 @@
+--- 
+title: "Psychometric Report On the questionnaire Kickstart Your Soft Skills based on the GOLEWEB database"
+author: "Vanthournout, G., Hoefkens, A."
+date: "`r Sys.Date()`"
+site: bookdown::bookdown_site
+output: bookdown::gitbook
+always_allow_html: true 
+documentclass: book
+bibliography: [book.bib, packages.bib]
+biblio-style: apalike
+link-citations: yes
+github-repo: rstudio/bookdown-demo
+description: "Report on psychometric analyses for the KYSS Questionnaire, based on data from the GOLEWEB database"
+---
+
+```{r setup,  include=FALSE}
+
+# Packages laden
+## Tidyverse packages
+### Laden en opslaan
+library ("WriteXLS")
+library(readxl)
+
+### Tidyverse
+library ("tidyverse")
+library ("ggplot2")
+library("dplyr")
+
+### Factoranalyses
+library ("lavaan")
+library ("semTools")
+
+
+### Inhoudelijke analyses
+library ("psych")
+library ("car")
+library ("fields")
+#library ("gmodels")
+#library ("rela")
+#library ("NbClust")
+ library("corrplot")
+ library("ggcorrplot")
+ library ("moments")
+library("gtsummary")
+library("effectsize")
+
+
+
+###Rapportage
+library ("tidyr")
+library ("data.table")
+library ("broom")
+library(kableExtra)
+library(flextable)
+library("semTable")
+library(semoutput)
+
+
+# Databastand inlezen
+## AP
+# setwd("C:/Users/p087468/Documents/AP/KYSS")
+
+#thuis
+Goleweb_KYSS <- read_delim("D:/Gert/Documents/kyss/test2.txt", 
+    delim = "\t", escape_double = FALSE, 
+    trim_ws = TRUE)
+
+
+Goleweb_KYSS <-Goleweb_KYSS %>%
+  dplyr::filter(Geslacht == 'm' | Geslacht == 'v') %>%
+  dplyr::filter(Instelling == 'AP Hogeschool' | Instelling == 'HOGENT' | Instelling == 'Hogeschool PXL - KYSS' | Instelling == 'Odisee' | Instelling == 'Thomas More') %>%
+  dplyr::mutate(Geslacht = replace(Geslacht, Geslacht == 'm', 'Male')) %>%
+  dplyr::mutate(Geslacht = replace(Geslacht, Geslacht == 'v', 'Female')) %>%
+  dplyr::rename (Gender = 'Geslacht', Institution = 'Instelling')
+
+Goleweb_schalen<-Goleweb_KYSS%>%
+  group_by(Gebruikersnaam)%>%
+  mutate(
+    Creativiteit = round(mean (c(K_Crea01,K_Crea02, K_Crea03, K_Crea04, K_Crea05, K_Crea06), na.rm = TRUE),2),
+    Diversiteit = round(mean (c(K_Divers01, K_Divers02, K_Divers03, K_Divers04, K_Divers05, K_Divers06),na.rm = TRUE),2),
+    Flexibiliteit = round(mean (c(K_Flex01, K_Flex02, K_Flex03,  K_Flex04,  K_Flex05, K_Flex06),na.rm = TRUE),2),
+    Plannen_organisatie = round(mean (c(K_Plan01, K_Plan02, K_Plan03, K_Plan04, K_Plan05, K_Plan06, K_Plan07),na.rm = TRUE),2),
+    Resultaatsgerichtheid = round(mean (c(K_Result01, K_Result02, K_Result03, K_Result04, K_Result05, K_Result06, K_Result07),na.rm = TRUE),2),
+    Samenwerken = round(mean (c(K_Samen01, K_Samen02, K_Samen03, K_Samen04, K_Samen05, K_Samen06),na.rm = TRUE),2),
+    Communicatie = round(mean (c(K_Comm01, K_Comm02, K_Comm03, K_Comm04, K_Comm05, K_Comm06, K_Comm07),na.rm = TRUE),2),
+    Digitale_vaardigheden = round(mean (c(K_DigVa01, K_DigVa02, K_DigVa03, K_DigVa04),na.rm = TRUE),2),
+    Klantgerichtheid = round(mean (c(K_Klant01, K_Klant02, K_Klant03, K_Klant04, K_Klant05, K_Klant06),na.rm = TRUE),2),
+    Zelfreflectie = round(mean (c(K_Refl01, K_Refl02, K_Refl03, K_Refl04, K_Refl05, K_Relf06),na.rm = TRUE),2),
+    Zelfstandigheid = round(mean (c(K_Zelf01, K_Zelf02, K_Zelf03, K_Zelf04, K_Zelf05, K_Zelf06),na.rm = TRUE),2),
+    Verantwoordelijkheid = round(mean (c(K_Vera01, K_Vera02, K_Vera03, K_Vera04),na.rm = TRUE),2),
+    Leerbereidheid = round(mean (c(K_Leer01, K_Leer02, K_Leer03, K_Leer04, K_Leer05, K_Leer06),na.rm = TRUE),2),
+    Analyseren = round(mean (c(K_Anal01, K_Anal02, K_Anal03, K_Anal04, K_Anal05),na.rm = TRUE),2),
+    Kritisch_denken = round(mean (c(K_Kriti01, K_Kriti02, K_Kriti03, K_Kriti04, K_Kriti05),na.rm = TRUE),2),
+    Inlevingsvermogen = round(mean (c(K_Inlev01, K_Inlev02, K_Inlev03, K_Inlev04, K_Inlev05, K_Inlev06),na.rm = TRUE),2)) %>%
+    ungroup()
+
+Goleweb_schalen_clean <- Goleweb_schalen %>%
+  dplyr::select(Institution, Gender, Gebruikersnaam, Creativiteit:Inlevingsvermogen)
+
+```
+
+
+# Introduction
+
+Needs to be added

@@ -1,0 +1,87 @@
+# Methodology
+
+## Sample
+
+```{r respondentaantallen, echo=F, include = FALSE}
+
+respondenten <-nrow(Goleweb_KYSS)
+Instellingen <- n_distinct (Goleweb_KYSS$Institution)
+
+
+```
+
+The sample for the current analysis consists of `r respondenten` students who filled in the KYSS-questionnaire using the GOLEWEB digital surveying tool. These pertain to `r Instellingen` institutions for higher education in Flanders. For informative purposes, frequency tables for the distribution of gender and higher education institutions are provided in *Table 2* and *Table 3* respectively.
+
+```{r frequentietabel Geslacht, echo=F}
+
+Frequentie_geslacht <- Goleweb_KYSS %>%
+group_by (Gender)%>%
+count() %>%
+  dplyr::mutate(Percentage = round((n /nrow(Goleweb_KYSS)*100),0)) %>%
+  ungroup()
+
+Tabel_gender <- flextable(Frequentie_geslacht)
+Tabel_gender <-set_caption(Tabel_gender, caption = "Table 2: Frequency table for gender")
+Tabel_gender
+```
+```{r frequentietabel instelling, echo=F}
+
+Frequentie_instelling <- Goleweb_KYSS %>%
+group_by (Institution)%>%
+count() %>%
+  dplyr::mutate(Percentage = round((n /nrow(Goleweb_KYSS)*100),0)) %>%
+  ungroup()
+
+Tabel_instelling <- flextable(Frequentie_instelling)
+Tabel_instelling <-set_caption(Tabel_instelling, caption = "Table 3: Frequency table for Institution")
+Tabel_instelling
+```
+
+Respondents  pertain to various course-programmes within these institutions and also vary year they were currently enrolled in. All students filled in the KYSS-questionnaire during the academic year 2021-2022.
+
+## Data analysis approach
+
+Analyses on **construct validity** were conducted using confirmatory factor analysis, using a maximum likelihood estimation with robust standard errors and a Satorra-Bentler scaled test statistic. In a first step, the validity of each separate scale was assessed, thereby using the *Comparative Fit Index (CFI)* and the *Root Mean Square Error of Approximation (RMSEA)* as primary fit statistics. Generally accepted cut-off points for good and acceptable model fit were applied (See *Table 3* for an overview)
+
+```{r cutoffs, echo=F}
+
+Fit_index <- c('Comparative fit index', 'Root Mean Square Error of Approximation')
+Acceptable_model_Fit <- c('> .900', '<.080')
+Good_model_Fit <-c('> .950', '<.050')
+
+cutoff <- data.frame(Fit_index, Acceptable_model_Fit, Good_model_Fit)
+set_caption(flextable(cutoff), caption = "Table 3: Cutoffs fit indices")
+
+```
+In the case of insufficient model fit, modification indices were analysed and used to enhance the model. To compare the models the *Bayesian Information Criterion (BIC)* and the *Akaike Information Criterion (AIC)* were used to compare the relative quality of the statistical models. For both criteria a beeter quality model is indicated by a lower value.
+
+Analyses on **measurement invariance** were conducted using Multigroup Confirmatory Factor Analysis. Measurement invariance analyses tests as to whether or not a construct (Scale) is measured similarly across sub-groups in a sample (e.g. do males and females conceive the concept of creativity in a similar way?).
+This entails:
+
++ (1) Looking at the overall quality of model fit when data is split into groups, as an indication that the same items load on the latent construct *(Configural Invariance)*
++ (2) Investigating whether factor loadings are equal across groups, indicating that the same items have a similar 'importance' for various groups *(Weak Invariance)*
++ (3) Exploring whether the intercepts of observed variables are equal across groups, indicating that various groups score items in a similar fashion *(Strong invariance)*
+
+Achieving strong invariance is a prerequisite for comparing scale-scores across groups. Otherwise put, lack of measurement invariance could lead to a biased interpretation of mean scores across groups, because differences can be due to differing interpretations of the concept and not to substantive differences between the groups.
+In Multigroup Confirmatory Factor Analysis, measurement invariance can be tested by looking at model fit indices and the change in model fit in increasingly restricted model. For configural invariance it is analysed as to whether models still achieve the above mentioned cut-off values *(Figure 3)* for good and acceptable model fit.
+Weak and Strong invariance are tested by subsequently constraining factor loading and item intercepts to be equal across groups and investigating their impact on model fit indices. Measurement invariance is assumed (by convenion) when decrease in model fit is below .01. In some cases results for different model fit indices contradict. It is then advised to interpret results with caution.
+If weak invariance is established but strong invariance could not be achieved, it is important to investigate how many items are problematic. If only a small number of items exhibit problems and the number of items in a scale is sufficiently large, it could be decided to delete the specific item from the scale or interpret substantive results with caution.
+
+**Reliability** analyses were conducted by measuring Cronbach's alpha measure for internal consistency. In line with conventions in social sciences a value of . 60 or higher is considered to indicate adequate reliability, while a value of at least .80 is considered as an indication of good quality.
+
+Scales that exhibit adequate construct valadity, invariance and reliability will be incorporated in **substantive analyses**. For each scale descriptive statistics for ech scale will be provided, including, mean, median, standard deviation, mean absolute deviation, skewness and kurtosis. Aditionally, descriptive statistics will be visualised using box- and whiskerplots.
+
+**Interrelations** between scales will be investigated using correlational analyses. The correlation coefficients will also be used as a measure of effect size, as indicated in *Table 4*
+
+```{r correlation indices, echo=F}
+Level <- c('Weak correlation', 'Moderate correlation', 'Strong correlation')
+Positive <- c('>.20', '>.30', '>.50')
+Negative <-c('<-.20', '<-.30', '<-.50')
+
+effect_cor <- data.frame(Level, Positive, Negative)
+set_caption(flextable(effect_cor), caption = "Table 4: Cutoffs strength correlations")
+```
+
+Finally **Substantive differences in scale scores across groups** will be explored using Analysis of Variance using respectively gender and institution as predictor and mean scale scores for eacht of the scales in the KYSS-questionnaire as dependents. As these aqnalyses are exploratory, no hypotheses off effect are formulated. In addition to sgnificance test partial Eta squared measures of effects size are computed. values of .01 or higher indicate a small effect, vallues of .08 or higher signify a moderate effect, while values of.14 or higher are an indication of a strong effect.
+
+
